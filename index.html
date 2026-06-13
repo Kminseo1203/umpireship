@@ -82,6 +82,14 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
 .sb-table th,.sb-table td{padding:5px;text-align:center;border-bottom:1px solid #f0f0f0}
 .sb-table th{color:#888;font-weight:600}
 .sub-log-item{font-size:12px;padding:5px 10px;border-radius:8px;background:#f5f5f5;margin-bottom:5px;color:#1a1a1a;line-height:1.6}
+
+/* 득점 플래시 애니메이션 */
+@keyframes scoreFlash{0%{transform:scale(1)}30%{transform:scale(1.25)}100%{transform:scale(1)}}
+.score-flash{animation:scoreFlash .4s ease}
+
+/* 스마트 투구 버튼 - 득점 관련은 강조 */
+.pq.smart-score{border-color:#185fa5;font-weight:700}
+
 @media(max-width:500px){
   .count-grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}
   .score-num{font-size:30px}
@@ -200,21 +208,39 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
     <div class="sec-title">투구 기록</div>
     <div class="pitch-wrap">
       <div class="pitch-log" id="pitchLog"><span style="font-size:12px;color:#aaa">없음</span></div>
-      <div class="pq-row">
+
+      <!-- 득점 관련 버튼 그룹 -->
+      <div style="font-size:11px;color:#888;margin-bottom:5px;font-weight:600">⚾ 타격 결과 (자동 점수 계산)</div>
+      <div class="pq-row" style="margin-bottom:8px">
+        <button class="pq smart-score" style="background:#e6f1fb;color:#185fa5;border-color:#185fa5" onclick="smartPlay('단타')">단타 (1루타)</button>
+        <button class="pq smart-score" style="background:#e6f1fb;color:#185fa5;border-color:#185fa5" onclick="smartPlay('2루타')">2루타</button>
+        <button class="pq smart-score" style="background:#e6f1fb;color:#185fa5;border-color:#185fa5" onclick="smartPlay('3루타')">3루타</button>
+        <button class="pq smart-score" style="background:#eeedfe;color:#3c3489;border-color:#3c3489" onclick="smartPlay('홈런')">🏠 홈런</button>
+        <button class="pq smart-score" style="background:#f0f0f0;color:#555;border-color:#aaa" onclick="smartPlay('볼넷')">볼넷/사구</button>
+        <button class="pq smart-score" style="background:#e1f5ee;color:#0f6e56;border-color:#0f6e56" onclick="smartPlay('도루')">도루</button>
+      </div>
+
+      <!-- 아웃 관련 -->
+      <div style="font-size:11px;color:#888;margin-bottom:5px;font-weight:600">🚫 아웃 결과</div>
+      <div class="pq-row" style="margin-bottom:8px">
+        <button class="pq" style="background:#fcebeb;color:#a32d2d" onclick="smartPlay('삼진')">삼진 아웃</button>
+        <button class="pq" style="background:#fcebeb;color:#a32d2d" onclick="smartPlay('병살')">병살 (2아웃)</button>
+        <button class="pq" style="background:#fcebeb;color:#a32d2d" onclick="smartPlay('플라이아웃')">플라이 아웃</button>
+        <button class="pq" style="background:#fcebeb;color:#a32d2d" onclick="smartPlay('땅볼아웃')">땅볼 아웃</button>
+        <button class="pq" style="background:#fcebeb;color:#a32d2d" onclick="smartPlay('희생번트')">희생번트</button>
+        <button class="pq" style="background:#faeeda;color:#854f0b" onclick="smartPlay('희생플라이')">희생플라이</button>
+      </div>
+
+      <!-- 투구 카운트 -->
+      <div style="font-size:11px;color:#888;margin-bottom:5px;font-weight:600">📊 투구 카운트</div>
+      <div class="pq-row" style="margin-bottom:8px">
         <button class="pq" style="background:#e1f5ee;color:#0f6e56" onclick="logPitch('볼','ball')">볼</button>
         <button class="pq" style="background:#faece7;color:#993c1d" onclick="logPitch('스트라이크','strike')">스트라이크</button>
         <button class="pq" style="background:#faeeda;color:#854f0b" onclick="logPitch('파울','foul')">파울</button>
-        <button class="pq" style="background:#e6f1fb;color:#185fa5" onclick="logPitch('안타','hit')">안타</button>
-        <button class="pq" style="background:#e6f1fb;color:#185fa5" onclick="logPitch('2루타','hit')">2루타</button>
-        <button class="pq" style="background:#e6f1fb;color:#185fa5" onclick="logPitch('3루타','hit')">3루타</button>
-        <button class="pq" style="background:#eeedfe;color:#3c3489" onclick="logPitch('홈런','hr')">홈런</button>
-        <button class="pq" style="background:#fcebeb;color:#a32d2d" onclick="logPitch('삼진','out')">삼진</button>
-        <button class="pq" style="background:#fcebeb;color:#a32d2d" onclick="logPitch('병살','out')">병살</button>
-        <button class="pq" style="background:#f0f0f0;color:#555" onclick="logPitch('사구','ball')">사구/볼넷</button>
-        <button class="pq" style="background:#f0f0f0;color:#555" onclick="logPitch('도루','hit')">도루</button>
         <button class="pq" style="background:#f0f0f0;color:#555" onclick="logPitch('폭투','ball')">폭투</button>
         <button class="pq" style="background:#f0f0f0;color:#555" onclick="logPitch('보크','ball')">보크</button>
       </div>
+
       <div style="margin-top:8px"><button class="btn" onclick="undoPitch()"><i class="ti ti-arrow-back"></i> 마지막 취소</button></div>
     </div>
 
@@ -279,7 +305,7 @@ const AV_TX=['#185fa5','#0f6e56','#3c3489','#854f0b','#993c1d','#3b6d11','#99355
 const g={
   scoreA:0,scoreB:0,inning:1,half:'top',
   balls:0,strikes:0,outs:0,
-  bases:[false,false,false,false],
+  bases:[false,false,false,false], // [홈(unused),1루,2루,3루]
   pitchLog:[],inningScores:{},
   curBatter:'',curPitcher:'',
   rosters:{A:[],B:[]},
@@ -298,6 +324,199 @@ function initRosters(){
 
 function getTeamName(t){return t==='A'?document.getElementById('teamA').value||'홈팀':document.getElementById('teamB').value||'원정팀';}
 function activePlayers(team){return g.rosters[team].filter(p=>p.status!=='out');}
+
+// 현재 공격팀이 어느 팀인지 반환 (초=B가 공격, 말=A가 공격)
+function battingTeam(){return g.half==='top'?'B':'A';}
+
+// ========== 스마트 플레이 핵심 로직 ==========
+function smartPlay(type){
+  const bt = battingTeam();
+  const runners = [g.bases[1], g.bases[2], g.bases[3]]; // 1루,2루,3루
+  let scored = 0;
+  let msg = '';
+
+  if(type === '홈런'){
+    // 타자 포함 모든 주자 홈인
+    scored = 1 + runners.filter(Boolean).length;
+    g.bases[1] = g.bases[2] = g.bases[3] = false;
+    logPitch('홈런 💥','hr');
+    msg = `🏠 홈런! ${scored}점 득점!`;
+    addScoreToTeam(bt, scored);
+    nextBatter();
+
+  } else if(type === '단타'){
+    // 3루 주자→홈, 2루 주자→3루, 1루 주자→2루(or3루), 타자→1루
+    // 단타: 3루주자 득점, 2루주자는 보통 3루(빠르면 홈), 1루주자→2루
+    if(runners[2]) scored++; // 3루 주자 득점
+    const new3 = runners[1]; // 2루→3루
+    const new2 = runners[0]; // 1루→2루
+    g.bases[3] = new3;
+    g.bases[2] = new2;
+    g.bases[1] = true; // 타자 1루
+    logPitch('단타','hit');
+    msg = scored > 0 ? `단타! ${scored}점 득점!` : '단타! 타자 1루 진출';
+    if(scored > 0) addScoreToTeam(bt, scored);
+    nextBatter();
+
+  } else if(type === '2루타'){
+    // 3루주자→홈, 2루주자→홈, 1루주자→3루, 타자→2루
+    if(runners[2]) scored++; // 3루→홈
+    if(runners[1]) scored++; // 2루→홈
+    const new3 = runners[0]; // 1루→3루
+    g.bases[3] = new3;
+    g.bases[2] = true; // 타자 2루
+    g.bases[1] = false;
+    logPitch('2루타','hit');
+    msg = scored > 0 ? `2루타! ${scored}점 득점!` : '2루타! 타자 2루 진출';
+    if(scored > 0) addScoreToTeam(bt, scored);
+    nextBatter();
+
+  } else if(type === '3루타'){
+    // 모든 주자 홈인, 타자→3루
+    scored = runners.filter(Boolean).length;
+    g.bases[1] = false;
+    g.bases[2] = false;
+    g.bases[3] = true; // 타자 3루
+    logPitch('3루타','hit');
+    msg = scored > 0 ? `3루타! ${scored}점 득점!` : '3루타! 타자 3루 진출';
+    if(scored > 0) addScoreToTeam(bt, scored);
+    nextBatter();
+
+  } else if(type === '볼넷'){
+    // 밀어내기: 1루에 주자 있으면 순서대로 밀림, 만루면 1점
+    if(runners[0] && runners[1] && runners[2]){
+      // 만루 → 3루주자 홈인
+      scored = 1;
+      addScoreToTeam(bt, scored);
+      msg = '볼넷! 만루 밀어내기 1점!';
+    } else if(runners[0] && runners[1]){
+      g.bases[3] = true;
+      msg = '볼넷! 타자 1루, 주자 모두 진루';
+    } else if(runners[0]){
+      g.bases[2] = true;
+      msg = '볼넷! 타자 1루, 1루 주자 2루 진루';
+    } else {
+      msg = '볼넷! 타자 1루 출루';
+    }
+    g.bases[1] = true;
+    logPitch('볼넷','ball');
+    nextBatter();
+
+  } else if(type === '도루'){
+    // 가장 앞선 주자가 다음 베이스로
+    if(runners[2]){
+      scored = 1;
+      g.bases[3] = false;
+      addScoreToTeam(bt, scored);
+      msg = '도루! 3루 주자 홈 도루 성공! 1점!';
+      logPitch('홈 도루','hit');
+    } else if(runners[1]){
+      g.bases[3] = true;
+      g.bases[2] = false;
+      msg = '도루! 2루 주자 3루 진루';
+      logPitch('3루 도루','hit');
+    } else if(runners[0]){
+      g.bases[2] = true;
+      g.bases[1] = false;
+      msg = '도루! 1루 주자 2루 진루';
+      logPitch('2루 도루','hit');
+    } else {
+      msg = '도루: 진루할 주자 없음';
+      showToast(msg);
+      return;
+    }
+
+  } else if(type === '삼진'){
+    logPitch('삼진','out');
+    g.strikes = 0; g.balls = 0;
+    addOut(1);
+    msg = '삼진 아웃!';
+    if(g.outs < 3) nextBatter();
+    return;
+
+  } else if(type === '병살'){
+    logPitch('병살','out');
+    g.strikes = 0; g.balls = 0;
+    // 1루 주자 아웃
+    if(g.bases[1]) g.bases[1] = false;
+    addOut(2);
+    msg = '병살! 2아웃 처리';
+    if(g.outs < 3) nextBatter();
+    return;
+
+  } else if(type === '플라이아웃'){
+    logPitch('플라이아웃','out');
+    g.strikes = 0; g.balls = 0;
+    addOut(1);
+    msg = '플라이 아웃!';
+    if(g.outs < 3) nextBatter();
+    return;
+
+  } else if(type === '땅볼아웃'){
+    logPitch('땅볼아웃','out');
+    g.strikes = 0; g.balls = 0;
+    addOut(1);
+    msg = '땅볼 아웃!';
+    if(g.outs < 3) nextBatter();
+    return;
+
+  } else if(type === '희생번트'){
+    logPitch('희생번트','out');
+    g.strikes = 0; g.balls = 0;
+    // 주자 한 베이스씩 진루
+    const new3 = runners[1];
+    const new2 = runners[0];
+    if(runners[2]){ scored++; addScoreToTeam(bt, scored); }
+    g.bases[3] = new3;
+    g.bases[2] = new2;
+    g.bases[1] = false;
+    addOut(1);
+    msg = scored > 0 ? `희생번트! ${scored}점 득점 + 1아웃` : '희생번트! 주자 진루 + 1아웃';
+    if(g.outs < 3) nextBatter();
+    return;
+
+  } else if(type === '희생플라이'){
+    logPitch('희생플라이','out');
+    g.strikes = 0; g.balls = 0;
+    if(runners[2]){
+      scored = 1;
+      g.bases[3] = false;
+      addScoreToTeam(bt, scored);
+      msg = '희생플라이! 3루 주자 홈인! 1점 + 1아웃';
+    } else {
+      msg = '희생플라이 아웃 (주자 득점 없음)';
+    }
+    addOut(1);
+    if(g.outs < 3) nextBatter();
+    return;
+  }
+
+  renderGame();
+  showToast(msg);
+}
+
+function addScoreToTeam(team, n){
+  if(team === 'A') g.scoreA += n;
+  else g.scoreB += n;
+  // 이닝별 스코어 기록
+  const key = team + '-' + g.inning;
+  g.inningScores[key] = (g.inningScores[key] || 0) + n;
+  // 점수 플래시 애니메이션
+  const el = document.getElementById('sc' + team);
+  if(el){ el.classList.remove('score-flash'); void el.offsetWidth; el.classList.add('score-flash'); }
+}
+
+function addOut(n){
+  g.outs = Math.min(3, g.outs + n);
+  if(g.outs >= 3){
+    showToast('3아웃! 이닝 전환');
+    renderGame();
+    setTimeout(nextInning, 700);
+  } else {
+    renderGame();
+  }
+}
+// ========== 여기까지 스마트 플레이 ==========
 
 function switchTab(id){
   document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['game','rosterA','rosterB','subs'][i]===id);});
@@ -380,12 +599,12 @@ function toggleBench(team,id){
 }
 
 function updateBatterPitcherSelects(){
-  const battingTeam=g.half==='top'?'B':'A';
-  const pitchingTeam=g.half==='top'?'A':'B';
+  const bt=battingTeam();
+  const pitchingTeam=bt==='A'?'B':'A';
   const bs=document.getElementById('curBatterSel');
   const ps=document.getElementById('curPitcherSel');
   if(!bs||!ps)return;
-  const bPlayers=activePlayers(battingTeam);
+  const bPlayers=activePlayers(bt);
   const pPlayers=g.rosters[pitchingTeam].filter(p=>p.pos==='투수'&&p.status!=='out');
   bs.innerHTML='<option value="">-- 선택 --</option>'+bPlayers.map(p=>`<option value="${p.id}">#${p.num} ${p.name} (${p.pos})</option>`).join('');
   ps.innerHTML='<option value="">-- 선택 --</option>'+pPlayers.map(p=>`<option value="${p.id}">#${p.num} ${p.name}</option>`).join('');
@@ -534,30 +753,36 @@ function renderPitchLog(){
 }
 
 function addCount(type){
-  if(type==='ball'){g.balls++;if(g.balls>=4){logPitch('볼넷','ball');g.balls=0;g.strikes=0;nextBatter();return;}}
-  else if(type==='strike'){g.strikes++;if(g.strikes>=3){logPitch('삼진','out');g.strikes=0;addCount('out');return;}}
-  else if(type==='out'){g.outs++;g.balls=0;g.strikes=0;if(g.outs>=3){showToast('3아웃! 이닝 전환');setTimeout(nextInning,600);return;}}
+  if(type==='ball'){g.balls++;if(g.balls>=4){logPitch('볼넷','ball');g.balls=0;g.strikes=0;smartPlay('볼넷');return;}}
+  else if(type==='strike'){g.strikes++;if(g.strikes>=3){g.strikes=0;smartPlay('삼진');return;}}
+  else if(type==='out'){g.outs++;g.balls=0;g.strikes=0;if(g.outs>=3){showToast('3아웃! 이닝 전환');renderGame();setTimeout(nextInning,600);return;}}
   renderGame();
 }
 
 function resetCount(keepOuts){g.balls=0;g.strikes=0;if(!keepOuts)g.outs=0;renderGame();}
+
 function nextBatter(){
   g.balls=0;g.strikes=0;
-  const battingTeam=g.half==='top'?'B':'A';
-  const active=activePlayers(battingTeam);
+  const bt=battingTeam();
+  const active=activePlayers(bt);
   if(active.length>0){
     const curIdx=active.findIndex(p=>String(p.id)===String(g.curBatter));
     const nextIdx=(curIdx+1)%active.length;
     g.curBatter=String(active[nextIdx].id);
   }
-  renderGame();showToast('다음 타자: '+(active.length>0?active[(active.findIndex(p=>String(p.id)===String(g.curBatter)))].name:''));
+  renderGame();
+  const active2=activePlayers(bt);
+  const cur=active2.find(p=>String(p.id)===String(g.curBatter));
+  if(cur) showToast('다음 타자: '+cur.name);
 }
+
 function chScore(t,d){if(t==='A')g.scoreA=Math.max(0,g.scoreA+d);else g.scoreB=Math.max(0,g.scoreB+d);renderGame();}
 function toggleBase(i){g.bases[i]=!g.bases[i];renderGame();}
 
 function toggleHalf(){
   if(g.half==='top'){g.half='bot';}else{g.half='top';g.inning=Math.min(g.inning+1,20);}
-  g.balls=0;g.strikes=0;g.outs=0;g.pitchLog=[];renderGame();
+  g.balls=0;g.strikes=0;g.outs=0;g.pitchLog=[];g.bases=[false,false,false,false];
+  renderGame();
   showToast(`${g.inning}회 ${g.half==='top'?'초':'말'} 시작`);
 }
 
@@ -574,7 +799,7 @@ function undoPitch(){if(g.pitchLog.length)g.pitchLog.pop();renderPitchLog();}
 
 function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
-  clearTimeout(g._tt);g._tt=setTimeout(()=>t.style.display='none',2200);
+  clearTimeout(g._tt);g._tt=setTimeout(()=>t.style.display='none',2500);
 }
 
 function resetAll(){
