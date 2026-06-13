@@ -12,7 +12,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 h1{font-size:18px;font-weight:600;margin-bottom:1rem;color:#1a1a1a}
 .sec-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .tab-bar{display:flex;gap:0;border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:1rem;background:#fff}
-.tab{flex:1;padding:9px 0;font-size:13px;font-weight:500;text-align:center;cursor:pointer;background:#fff;color:#888;border:none;border-right:1px solid #ddd;transition:background .15s}
+.tab{flex:1;padding:9px 0;font-size:12px;font-weight:500;text-align:center;cursor:pointer;background:#fff;color:#888;border:none;border-right:1px solid #ddd;transition:background .15s}
 .tab:last-child{border-right:none}
 .tab.active{background:#f0f0f0;color:#1a1a1a}
 .panel{display:none}.panel.active{display:block}
@@ -22,19 +22,1021 @@ input[type=text],input[type=number],select,textarea{font-family:inherit;font-siz
 input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:#666}
 .btn{padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;font-size:13px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:background .15s}
 .btn:hover{background:#f5f5f5}
-.btn.danger{border-color:#f09595;color:#a32d2d}
-.btn.danger:hover{background:#fcebeb}
+.btn.danger{border-color:#f09595;color:#a32d2d}.btn.danger:hover{background:#fcebeb}
 .btn.primary{background:#f0f0f0;font-weight:500}
 .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px}
-.b-active{background:#e1f5ee;color:#0f6e56}
-.b-sub{background:#e6f1fb;color:#185fa5}
-.b-ph{background:#faeeda;color:#854f0b}
-.b-pr{background:#eeedfe;color:#3c3489}
-.b-def{background:#eaf3de;color:#3b6d11}
-.b-out{background:#fcebeb;color:#a32d2d}
+.b-active{background:#e1f5ee;color:#0f6e56}.b-sub{background:#e6f1fb;color:#185fa5}
+.b-ph{background:#faeeda;color:#854f0b}.b-pr{background:#eeedfe;color:#3c3489}
+.b-def{background:#eaf3de;color:#3b6d11}.b-out{background:#fcebeb;color:#a32d2d}
 .b-bench{background:#f0f0f0;color:#666}
 .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
 .player-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0}
+.player-row:last-child{border-bottom:none}
+.pos-sel{font-size:12px;width:82px}
+.num-tag{font-size:12px;color:#aaa;min-width:28px;text-align:right}
+.score-wrap{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:1rem}
+.score-box{background:#f5f5f5;border-radius:8px;padding:.75rem 1.5rem;text-align:center}
+.score-num{font-size:40px;font-weight:700;line-height:1}
+.score-lbl{font-size:12px;color:#888;margin-top:4px}
+.score-btns{display:flex;gap:4px;justify-content:center;margin-top:6px}
+.sc-btn{width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.sc-btn:hover{background:#f5f5f5}
+.inning-bar{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:1rem}
+.half-badge{font-size:12px;padding:2px 8px;border-radius:12px;font-weight:600}
+.half-top{background:#e6f1fb;color:#185fa5}.half-bot{background:#faeeda;color:#854f0b}
+.count-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:.5rem}
+.count-card{background:#f5f5f5;border-radius:10px;padding:.75rem;text-align:center}
+.count-lbl{font-size:12px;color:#888;margin-bottom:6px}
+.dots{display:flex;gap:5px;justify-content:center}
+.dot{width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;background:#fff}
+.dot.ball-on{background:#1d9e75;border-color:#0f6e56}
+.dot.strike-on{background:#d85a30;border-color:#993c1d}
+.dot.out-on{background:#e24b4a;border-color:#a32d2d}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.diamond-wrap{background:#f5f5f5;border-radius:10px;padding:1rem}
+.base-empty{fill:#fff;stroke:#ccc;stroke-width:1.5}
+.base-on{fill:#ef9f27;stroke:#854f0b;stroke-width:1.5}
+.status-wrap{background:#f5f5f5;border-radius:10px;padding:1rem}
+.out-circle{width:30px;height:30px;border-radius:50%;border:1.5px solid #ccc;background:#fff}
+.out-circle.filled{background:#e24b4a;border-color:#a32d2d}
+
+/* 투구 카운트 큰 버튼 */
+.pitch-btn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:1rem}
+.pitch-btn{padding:10px 0;border-radius:10px;border:1.5px solid #ddd;background:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .12s}
+.pitch-btn:active{transform:scale(.94)}
+.pb-ball{background:#e1f5ee;color:#0f6e56;border-color:#9ed8c4}
+.pb-strike{background:#faece7;color:#993c1d;border-color:#f0b8a5}
+.pb-foul{background:#faeeda;color:#854f0b;border-color:#f0d3a0}
+.pb-balk{background:#f0f0f0;color:#555;border-color:#ccc}
+.pb-wp{background:#f0f0f0;color:#555;border-color:#ccc}
+
+/* 타격결과 버튼 */
+.play-grid{display:grid;gap:6px;margin-bottom:.5rem}
+.play-btn{padding:10px 12px;border-radius:10px;border:1.5px solid #ddd;background:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;transition:all .12s}
+.play-btn:active{transform:scale(.97)}
+.pb-hit{background:#e6f1fb;color:#185fa5;border-color:#a8ccf0}
+.pb-hr{background:#eeedfe;color:#3c3489;border-color:#b9b7f5}
+.pb-walk{background:#e1f5ee;color:#0f6e56;border-color:#9ed8c4}
+.pb-out{background:#fcebeb;color:#a32d2d;border-color:#f0a5a5}
+.pb-sac{background:#faeeda;color:#854f0b;border-color:#f0d3a0}
+
+.pitch-log-wrap{background:#f5f5f5;border-radius:10px;padding:.75rem;margin-bottom:1rem}
+.pitch-log{display:flex;flex-wrap:wrap;gap:4px;min-height:28px;margin-bottom:6px}
+.ptag{font-size:11px;padding:2px 7px;border-radius:10px;font-weight:600}
+.ptag-ball{background:#e1f5ee;color:#0f6e56}
+.ptag-strike{background:#faece7;color:#993c1d}
+.ptag-foul{background:#faeeda;color:#854f0b}
+.ptag-hit{background:#e6f1fb;color:#185fa5}
+.ptag-out{background:#fcebeb;color:#a32d2d}
+.ptag-hr{background:#eeedfe;color:#3c3489}
+.ptag-etc{background:#f0f0f0;color:#555}
+
+#toast{background:#1a1a1a;color:#fff;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;display:none;text-align:center;margin-bottom:10px}
+.sb-scroll{overflow-x:auto}
+.sb-table{width:100%;border-collapse:collapse;font-size:12px;min-width:380px;table-layout:fixed}
+.sb-table th,.sb-table td{padding:5px;text-align:center;border-bottom:1px solid #f0f0f0}
+.sb-table th{color:#888;font-weight:600}
+.sub-log-item{font-size:12px;padding:5px 10px;border-radius:8px;background:#f5f5f5;margin-bottom:5px;line-height:1.6}
+
+/* 타순표 */
+.order-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0f0f0}
+.order-row:last-child{border-bottom:none}
+.order-num{width:22px;height:22px;border-radius:50%;background:#f0f0f0;color:#555;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.order-num.cur{background:#185fa5;color:#fff}
+.order-arrow{cursor:pointer;color:#aaa;padding:2px 4px;border-radius:4px;font-size:14px;background:none;border:none;font-family:inherit}
+.order-arrow:hover{background:#f0f0f0;color:#1a1a1a}
+
+@keyframes scoreFlash{0%{transform:scale(1)}30%{transform:scale(1.25)}100%{transform:scale(1)}}
+.score-flash{animation:scoreFlash .4s ease}
+
+@media(max-width:500px){
+  .count-grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}
+  .score-num{font-size:30px}.pitch-btn-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1><i class="ti ti-clipboard-list" style="font-size:20px;vertical-align:-3px;margin-right:6px"></i>야구 심판 스코어카드</h1>
+
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('game')">경기</button>
+    <button class="tab" onclick="switchTab('rosterA')">홈팀</button>
+    <button class="tab" onclick="switchTab('rosterB')">원정팀</button>
+    <button class="tab" onclick="switchTab('subs')">교체</button>
+  </div>
+
+  <!-- ===== GAME ===== -->
+  <div class="panel active" id="panel-game">
+    <div id="toast"></div>
+
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-bottom:.75rem">
+      <input id="teamA" value="홈팀" style="font-size:16px;font-weight:600;border:none;border-bottom:1px solid #ccc;background:transparent;color:#1a1a1a;width:100%;padding:3px 0;text-align:center;font-family:inherit" oninput="renderGame()"/>
+      <span style="font-size:12px;color:#aaa">VS</span>
+      <input id="teamB" value="원정팀" style="font-size:16px;font-weight:600;border:none;border-bottom:1px solid #ccc;background:transparent;color:#1a1a1a;width:100%;padding:3px 0;text-align:center;font-family:inherit" oninput="renderGame()"/>
+    </div>
+
+    <div class="score-wrap">
+      <div class="score-box">
+        <div class="score-num" id="scA">0</div>
+        <div class="score-lbl" id="lblA">홈팀</div>
+        <div class="score-btns"><button class="sc-btn" onclick="chScore('A',1)">+</button><button class="sc-btn" onclick="chScore('A',-1)">−</button></div>
+      </div>
+      <span style="font-size:22px;color:#ccc">:</span>
+      <div class="score-box">
+        <div class="score-num" id="scB">0</div>
+        <div class="score-lbl" id="lblB">원정팀</div>
+        <div class="score-btns"><button class="sc-btn" onclick="chScore('B',1)">+</button><button class="sc-btn" onclick="chScore('B',-1)">−</button></div>
+      </div>
+    </div>
+
+    <div class="inning-bar">
+      <button class="btn" onclick="chInning(-1)" style="padding:4px 9px"><i class="ti ti-chevron-left"></i></button>
+      <span id="inningNum" style="font-size:20px;font-weight:700">1</span>
+      <span style="font-size:13px;color:#888">회</span>
+      <span class="half-badge half-top" id="halfBadge">초</span>
+      <button class="btn" onclick="toggleHalf()" style="padding:4px 9px;font-size:12px">전환</button>
+      <button class="btn" onclick="chInning(1)" style="padding:4px 9px"><i class="ti ti-chevron-right"></i></button>
+    </div>
+
+    <!-- 현재 타자/투수 -->
+    <div class="sec-title">현재 타자 / 투수</div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:4px">타자 <span id="curBatterInfo" style="color:#185fa5;font-weight:700"></span></div>
+          <select id="curBatterSel" style="width:100%" onchange="g.curBatter=this.value;g.curBatterOrderIdx=getBatterOrderIdx();renderStatus()"></select>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:4px">투수 (수비팀)</div>
+          <select id="curPitcherSel" style="width:100%" onchange="g.curPitcher=this.value"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 카운트 -->
+    <div class="sec-title">카운트</div>
+    <div class="count-grid">
+      <div class="count-card">
+        <div class="count-lbl">볼 <span id="ballN" style="font-size:18px;font-weight:700;color:#1d9e75">0</span></div>
+        <div class="dots" id="ballDots"></div>
+      </div>
+      <div class="count-card">
+        <div class="count-lbl">스트라이크 <span id="strikeN" style="font-size:18px;font-weight:700;color:#d85a30">0</span></div>
+        <div class="dots" id="strikeDots"></div>
+      </div>
+      <div class="count-card">
+        <div class="count-lbl">아웃 <span id="outN" style="font-size:18px;font-weight:700;color:#e24b4a">0</span></div>
+        <div class="dots" id="outDots"></div>
+      </div>
+    </div>
+
+    <!-- 투구 카운트 버튼 (KBO 룰) -->
+    <div class="sec-title">투구 카운트 <span style="font-size:10px;color:#aaa;font-weight:400;text-transform:none">(KBO: 3스트라이크 삼진, 4볼 볼넷, 파울은 2스트 이후 무효)</span></div>
+    <div class="pitch-btn-grid">
+      <button class="pitch-btn pb-ball" onclick="pitchCount('ball')">볼</button>
+      <button class="pitch-btn pb-strike" onclick="pitchCount('strike')">스트라이크</button>
+      <button class="pitch-btn pb-foul" onclick="pitchCount('foul')">파울</button>
+      <button class="pitch-btn pb-wp" onclick="pitchCount('wp')">폭투</button>
+      <button class="pitch-btn pb-balk" onclick="pitchCount('balk')">보크</button>
+    </div>
+    <div class="row" style="margin-bottom:1rem">
+      <button class="btn" onclick="resetCount()"><i class="ti ti-refresh"></i> 카운트 초기화</button>
+      <button class="btn" onclick="manualNextBatter()"><i class="ti ti-arrow-right"></i> 다음 타자</button>
+      <button class="btn" onclick="nextInning()"><i class="ti ti-player-skip-forward"></i> 이닝 종료</button>
+    </div>
+
+    <!-- 베이스/아웃 -->
+    <div class="field-row">
+      <div class="diamond-wrap">
+        <div class="sec-title" style="margin-bottom:6px">베이스</div>
+        <svg width="140" height="140" viewBox="0 0 140 140" style="display:block;margin:0 auto">
+          <rect id="b2" x="53" y="5" width="34" height="34" rx="4" class="base-empty" style="cursor:pointer" onclick="toggleBase(2)"/>
+          <text x="70" y="28" text-anchor="middle" font-size="12" fill="#888" pointer-events="none">2루</text>
+          <rect id="b1" x="101" y="53" width="34" height="34" rx="4" class="base-empty" style="cursor:pointer" onclick="toggleBase(1)"/>
+          <text x="118" y="76" text-anchor="middle" font-size="12" fill="#888" pointer-events="none">1루</text>
+          <rect id="b3" x="5" y="53" width="34" height="34" rx="4" class="base-empty" style="cursor:pointer" onclick="toggleBase(3)"/>
+          <text x="22" y="76" text-anchor="middle" font-size="12" fill="#888" pointer-events="none">3루</text>
+          <polygon id="bH" points="70,101 87,118 70,135 53,118" class="base-empty" style="cursor:pointer" onclick="toggleBase(0)"/>
+          <text x="70" y="124" text-anchor="middle" font-size="11" fill="#888" pointer-events="none">홈</text>
+        </svg>
+      </div>
+      <div class="status-wrap">
+        <div class="sec-title" style="margin-bottom:8px">아웃</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:1rem" id="outCircles"></div>
+        <div class="sec-title" style="margin-bottom:6px">현황</div>
+        <div id="statusSummary" style="font-size:12px;line-height:1.9"></div>
+      </div>
+    </div>
+
+    <!-- 타격 결과 (자동 득점) -->
+    <div class="sec-title">타격 결과 <span style="font-size:10px;color:#aaa;font-weight:400;text-transform:none">— 베이스 상황 자동 반영</span></div>
+    <div style="margin-bottom:1rem">
+      <div class="play-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:6px">
+        <button class="play-btn pb-hit" onclick="smartPlay('단타')">🏃 단타</button>
+        <button class="play-btn pb-hit" onclick="smartPlay('2루타')">🏃 2루타</button>
+        <button class="play-btn pb-hit" onclick="smartPlay('3루타')">🏃 3루타</button>
+      </div>
+      <div class="play-grid" style="grid-template-columns:1fr 1fr;margin-bottom:6px">
+        <button class="play-btn pb-hr" onclick="smartPlay('홈런')" style="font-size:15px">🏠 홈런</button>
+        <button class="play-btn pb-walk" onclick="smartPlay('볼넷')">🚶 볼넷 / 사구</button>
+      </div>
+      <div class="play-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:6px">
+        <button class="play-btn pb-out" onclick="smartPlay('삼진')">✖ 삼진</button>
+        <button class="play-btn pb-out" onclick="smartPlay('땅볼아웃')">✖ 땅볼</button>
+        <button class="play-btn pb-out" onclick="smartPlay('플라이아웃')">✖ 플라이</button>
+      </div>
+      <div class="play-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <button class="play-btn pb-out" onclick="smartPlay('병살')">✖✖ 병살</button>
+        <button class="play-btn pb-sac" onclick="smartPlay('희생번트')">📦 희생번트</button>
+        <button class="play-btn pb-sac" onclick="smartPlay('희생플라이')">🦅 희생플라이</button>
+      </div>
+      <div class="play-grid" style="grid-template-columns:1fr 1fr;margin-top:6px">
+        <button class="play-btn" style="background:#f5f5f5;color:#555;border-color:#ccc" onclick="smartPlay('도루')">🏃 도루</button>
+        <button class="play-btn" style="background:#f5f5f5;color:#555;border-color:#ccc" onclick="smartPlay('도루실패')">✖ 도루실패</button>
+      </div>
+    </div>
+
+    <!-- 투구 기록 로그 -->
+    <div class="pitch-log-wrap">
+      <div style="font-size:11px;color:#888;font-weight:600;margin-bottom:5px">이번 타석 투구 기록</div>
+      <div class="pitch-log" id="pitchLog"><span style="font-size:12px;color:#aaa">없음</span></div>
+      <button class="btn" onclick="undoPitch()" style="font-size:12px"><i class="ti ti-arrow-back"></i> 마지막 취소</button>
+    </div>
+
+    <!-- 이닝별 스코어 -->
+    <div class="sec-title">이닝별 스코어</div>
+    <div class="card sb-scroll" style="padding:.75rem;margin-bottom:1rem">
+      <table class="sb-table"><thead id="sbHead"></thead><tbody id="sbBody"></tbody></table>
+    </div>
+
+    <!-- 심판 메모 -->
+    <div class="sec-title">심판 메모</div>
+    <textarea id="memoInput" placeholder="특이사항, 항의, 부상 기록..." style="width:100%;min-height:60px;margin-bottom:1rem;resize:vertical"></textarea>
+
+    <div class="row">
+      <button class="btn primary" onclick="resetAll()"><i class="ti ti-refresh"></i> 전체 초기화</button>
+      <button class="btn" onclick="copyReport()"><i class="ti ti-copy"></i> 기록 복사</button>
+    </div>
+  </div>
+
+  <!-- ===== ROSTER A (홈팀) ===== -->
+  <div class="panel" id="panel-rosterA"></div>
+
+  <!-- ===== ROSTER B (원정팀) ===== -->
+  <div class="panel" id="panel-rosterB"></div>
+
+  <!-- ===== SUBS ===== -->
+  <div class="panel" id="panel-subs">
+    <div class="sec-title">선수 교체 / 대타·대주자</div>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:4px">팀</div>
+          <select id="subTeamSel" style="width:100%" onchange="renderSubForm()">
+            <option value="A">홈팀</option><option value="B">원정팀</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:4px">교체 유형</div>
+          <select id="subTypeSel" style="width:100%" onchange="renderSubForm()">
+            <option value="ph">대타 (PH)</option>
+            <option value="pr">대주자 (PR)</option>
+            <option value="def">수비 교체</option>
+            <option value="p">투수 교체</option>
+          </select>
+        </div>
+      </div>
+      <div id="subFormOut" style="margin-bottom:10px"></div>
+      <div id="subFormIn" style="margin-bottom:10px"></div>
+      <div id="subPosRow" style="display:none;margin-bottom:10px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">새 포지션</div>
+        <select id="subNewPos" style="width:150px">
+          <option>투수</option><option>포수</option><option>1루수</option><option>2루수</option><option>3루수</option><option>유격수</option><option>좌익수</option><option>중견수</option><option>우익수</option>
+        </select>
+      </div>
+      <div style="font-size:11px;color:#888;margin-bottom:4px">사유 (선택)</div>
+      <input type="text" id="subReason" placeholder="예: 부상, 전략적 교체..." style="width:100%;margin-bottom:10px"/>
+      <button class="btn primary" onclick="doSub()"><i class="ti ti-replace"></i> 교체 적용</button>
+    </div>
+    <div class="sec-title" style="margin-top:1rem">교체 기록</div>
+    <div id="subLogList"><div style="font-size:13px;color:#888">교체 기록 없음</div></div>
+  </div>
+</div>
+
+<script>
+// ===================== 상수 =====================
+const POSITIONS=['투수','포수','1루수','2루수','3루수','유격수','좌익수','중견수','우익수','지명타자'];
+const AV_BG=['#e6f1fb','#e1f5ee','#eeedfe','#faeeda','#faece7','#eaf3de','#fbeaf0','#fcebeb'];
+const AV_TX=['#185fa5','#0f6e56','#3c3489','#854f0b','#993c1d','#3b6d11','#993556','#a32d2d'];
+
+// ===================== 상태 =====================
+const g={
+  scoreA:0, scoreB:0, inning:1, half:'top',
+  balls:0, strikes:0, outs:0,
+  bases:[false,false,false,false], // [0:홈unused, 1:1루, 2:2루, 3:3루]
+  pitchLog:[], inningScores:{},
+  curBatter:'', curPitcher:'',
+  rosters:{A:[], B:[]},
+  // 타순: 팀별 선수 id 배열 (순서가 타순)
+  lineupOrder:{A:[], B:[]},
+  // 현재 타순 인덱스
+  lineupIdx:{A:0, B:0},
+  subLog:[], _pid:1, _tt:null
+};
+
+function mkPlayer(num,name,pos){
+  return{id:g._pid++, num, name, pos, status:'active'};
+}
+
+function initRosters(){
+  const pos=['투수','포수','1루수','2루수','3루수','유격수','좌익수','중견수','우익수','지명타자'];
+  for(let i=0;i<10;i++){
+    const pA=mkPlayer(i+1,'선수'+(i+1),pos[i]);
+    const pB=mkPlayer(i+1,'선수'+(i+1),pos[i]);
+    g.rosters.A.push(pA);
+    g.rosters.B.push(pB);
+    g.lineupOrder.A.push(pA.id);
+    g.lineupOrder.B.push(pB.id);
+  }
+}
+
+// ===================== 헬퍼 =====================
+function getTeamName(t){return t==='A'?document.getElementById('teamA').value||'홈팀':document.getElementById('teamB').value||'원정팀';}
+function battingTeam(){return g.half==='top'?'B':'A';}
+function pitchingTeam(){return g.half==='top'?'A':'B';}
+function activePlayers(team){return g.rosters[team].filter(p=>p.status!=='out');}
+
+// 현재 타자 타순에서의 순서 인덱스
+function getBatterOrderIdx(){
+  const bt=battingTeam();
+  const idx=g.lineupOrder[bt].indexOf(parseInt(g.curBatter)||g.curBatter);
+  return idx>=0?idx:g.lineupIdx[bt];
+}
+
+// ===================== 투구 카운트 (KBO 룰) =====================
+// KBO 룰:
+//  - 볼: 볼 카운트 +1, 4볼 → 볼넷
+//  - 스트라이크: +1, 3스트 → 삼진
+//  - 파울: 2스트 미만이면 스트라이크로 처리, 2스트 이후엔 카운트 변화 없음 (단 번트파울은 삼진)
+//  - 폭투: 카운트 변화 없음, 주자 있으면 진루 가능 (여기선 로그만)
+//  - 보크: 카운트 변화 없음, 주자 한 베이스 진루
+
+function pitchCount(type){
+  if(type==='ball'){
+    logPitch('볼','ball');
+    g.balls++;
+    if(g.balls>=4){
+      // 볼넷
+      g.balls=0; g.strikes=0;
+      smartPlay('볼넷');
+      return;
+    }
+  } else if(type==='strike'){
+    logPitch('스트라이크','strike');
+    g.strikes++;
+    if(g.strikes>=3){
+      g.balls=0; g.strikes=0;
+      smartPlay('삼진');
+      return;
+    }
+  } else if(type==='foul'){
+    // KBO: 2스트 이후 파울은 카운트 변화 없음
+    if(g.strikes<2){
+      g.strikes++;
+      logPitch('파울(스트)','foul');
+    } else {
+      logPitch('파울','foul');
+      showToast('파울 — 카운트 변화 없음 (KBO)');
+    }
+  } else if(type==='wp'){
+    logPitch('폭투','etc');
+    showToast('폭투 기록');
+    // 폭투: 주자 진루 여부는 수동으로 베이스 조작
+  } else if(type==='balk'){
+    logPitch('보크','etc');
+    // KBO 보크: 모든 주자 1베이스 진루
+    const bt=battingTeam();
+    let scored=0;
+    if(g.bases[3]){scored++;}
+    const new3=g.bases[2];
+    const new2=g.bases[1];
+    g.bases[3]=new3;
+    g.bases[2]=new2;
+    g.bases[1]=false;
+    if(g.bases[3]===undefined) g.bases[3]=false; // 안전
+    if(scored>0){
+      addScoreToTeam(bt,scored);
+      showToast(`보크! 3루 주자 홈인 ${scored}점`);
+    } else {
+      showToast('보크! 주자 1베이스 진루');
+    }
+  }
+  renderGame();
+}
+
+// ===================== 스마트 플레이 =====================
+function smartPlay(type){
+  const bt=battingTeam();
+  const runners=[g.bases[1], g.bases[2], g.bases[3]];
+  let scored=0;
+  let msg='';
+
+  if(type==='홈런'){
+    scored=1+runners.filter(Boolean).length;
+    g.bases[1]=g.bases[2]=g.bases[3]=false;
+    logPitch('홈런 💥','hr');
+    addScoreToTeam(bt,scored);
+    msg=`🏠 홈런! ${scored}점 득점!`;
+    afterBatterOut(false); // 타자 진루 (홈런=타자도 홈인), 다음 타자로
+
+  } else if(type==='단타'){
+    if(runners[2]) scored++;
+    const new3=runners[1];
+    const new2=runners[0];
+    g.bases[3]=new3; g.bases[2]=new2; g.bases[1]=true;
+    logPitch('단타','hit');
+    if(scored>0) addScoreToTeam(bt,scored);
+    msg=scored>0?`단타! ${scored}점 득점!`:'단타! 타자 1루 진출';
+    nextBatterAuto();
+
+  } else if(type==='2루타'){
+    if(runners[2]) scored++;
+    if(runners[1]) scored++;
+    g.bases[3]=runners[0]; g.bases[2]=true; g.bases[1]=false;
+    logPitch('2루타','hit');
+    if(scored>0) addScoreToTeam(bt,scored);
+    msg=scored>0?`2루타! ${scored}점 득점!`:'2루타! 타자 2루 진출';
+    nextBatterAuto();
+
+  } else if(type==='3루타'){
+    scored=runners.filter(Boolean).length;
+    g.bases[1]=false; g.bases[2]=false; g.bases[3]=true;
+    logPitch('3루타','hit');
+    if(scored>0) addScoreToTeam(bt,scored);
+    msg=scored>0?`3루타! ${scored}점 득점!`:'3루타! 타자 3루 진출';
+    nextBatterAuto();
+
+  } else if(type==='볼넷'){
+    // 밀어내기
+    if(runners[0]&&runners[1]&&runners[2]){
+      scored=1; addScoreToTeam(bt,scored);
+      // 3루 주자 홈인, 나머지 그대로, 타자 1루
+      msg='볼넷! 만루 밀어내기 1점!';
+    } else if(runners[0]&&runners[1]){
+      g.bases[3]=true;
+      msg='볼넷! 주자 진루';
+    } else if(runners[0]){
+      g.bases[2]=true;
+      msg='볼넷! 1루 주자 2루 진루';
+    } else {
+      msg='볼넷! 타자 1루 출루';
+    }
+    g.bases[1]=true;
+    logPitch('볼넷','ball');
+    nextBatterAuto();
+
+  } else if(type==='삼진'){
+    logPitch('삼진 ✖','out');
+    g.balls=0; g.strikes=0;
+    doOut(1,'삼진 아웃!');
+    return;
+
+  } else if(type==='땅볼아웃'){
+    logPitch('땅볼아웃','out');
+    g.balls=0; g.strikes=0;
+    doOut(1,'땅볼 아웃!');
+    return;
+
+  } else if(type==='플라이아웃'){
+    logPitch('플라이아웃','out');
+    g.balls=0; g.strikes=0;
+    doOut(1,'플라이 아웃!');
+    return;
+
+  } else if(type==='병살'){
+    logPitch('병살','out');
+    g.balls=0; g.strikes=0;
+    // 1루 주자 아웃
+    if(g.bases[1]) g.bases[1]=false;
+    doOut(2,'병살! 2아웃 처리');
+    return;
+
+  } else if(type==='희생번트'){
+    logPitch('희생번트','out');
+    g.balls=0; g.strikes=0;
+    // 주자 한 칸씩 진루, 타자 아웃
+    if(runners[2]){scored++; addScoreToTeam(bt,scored);}
+    g.bases[3]=runners[1]; g.bases[2]=runners[0]; g.bases[1]=false;
+    msg=scored>0?`희생번트 + ${scored}점 득점`:'희생번트 — 주자 진루';
+    doOut(1, msg);
+    return;
+
+  } else if(type==='희생플라이'){
+    logPitch('희생플라이','out');
+    g.balls=0; g.strikes=0;
+    if(runners[2]){
+      scored=1; g.bases[3]=false;
+      addScoreToTeam(bt,scored);
+      msg='희생플라이! 3루 주자 홈인 1점';
+    } else {
+      msg='희생플라이 아웃';
+    }
+    doOut(1, msg);
+    return;
+
+  } else if(type==='도루'){
+    // 가장 앞 주자부터
+    if(runners[2]){
+      scored=1; g.bases[3]=false;
+      addScoreToTeam(bt,scored);
+      logPitch('홈 도루','hit');
+      msg='도루! 3루 주자 홈인 1점!';
+    } else if(runners[1]){
+      g.bases[3]=true; g.bases[2]=false;
+      logPitch('3루 도루','hit');
+      msg='도루! 2루→3루';
+    } else if(runners[0]){
+      g.bases[2]=true; g.bases[1]=false;
+      logPitch('2루 도루','hit');
+      msg='도루! 1루→2루';
+    } else {
+      showToast('진루할 주자 없음');return;
+    }
+    renderGame(); showToast(msg);
+    return;
+
+  } else if(type==='도루실패'){
+    logPitch('도루실패','out');
+    doOut(1,'도루 실패 — 아웃!');
+    return;
+  }
+
+  renderGame();
+  showToast(msg);
+}
+
+// 아웃 처리 후 3아웃이면 이닝 전환
+function doOut(n, msg){
+  g.outs=Math.min(3, g.outs+n);
+  showToast(msg||'아웃!');
+  if(g.outs>=3){
+    renderGame();
+    setTimeout(()=>{nextInning();},700);
+  } else {
+    nextBatterAuto();
+    renderGame();
+  }
+}
+
+// 홈런 등 타자도 홈인한 경우 다음 타자
+function afterBatterOut(isOut){
+  if(!isOut) nextBatterAuto();
+}
+
+// ===================== 타순 관리 =====================
+// 자동 다음 타자 (타순 순환)
+function nextBatterAuto(){
+  g.balls=0; g.strikes=0;
+  const bt=battingTeam();
+  const order=g.lineupOrder[bt];
+  if(!order.length){renderGame();return;}
+  // 현재 타순 인덱스에서 다음으로
+  g.lineupIdx[bt]=(g.lineupIdx[bt]+1)%order.length;
+  const nextId=order[g.lineupIdx[bt]];
+  const p=g.rosters[bt].find(x=>x.id===nextId);
+  if(p&&p.status!=='out'){
+    g.curBatter=String(nextId);
+  } else {
+    // 아웃된 선수면 다시 한 칸
+    let tries=order.length;
+    while(tries-->0){
+      g.lineupIdx[bt]=(g.lineupIdx[bt]+1)%order.length;
+      const nid=order[g.lineupIdx[bt]];
+      const np=g.rosters[bt].find(x=>x.id===nid);
+      if(np&&np.status!=='out'){g.curBatter=String(nid);break;}
+    }
+  }
+  renderGame();
+  const cur=g.rosters[bt].find(p=>String(p.id)===String(g.curBatter));
+  const orderNum=g.lineupIdx[bt]+1;
+  if(cur) showToast(`다음 타자: ${orderNum}번 #${cur.num} ${cur.name}`);
+}
+
+function manualNextBatter(){
+  nextBatterAuto();
+}
+
+// ===================== 탭 전환 =====================
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',['game','rosterA','rosterB','subs'][i]===id);
+  });
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='rosterA')renderRoster('A');
+  if(id==='rosterB')renderRoster('B');
+  if(id==='subs'){renderSubForm();renderSubLog();}
+  if(id==='game')renderGame();
+}
+
+// ===================== 로스터 / 타순 =====================
+function statusBadge(p){
+  const map={active:'<span class="badge b-active">출전</span>',bench:'<span class="badge b-bench">벤치</span>',ph:'<span class="badge b-ph">대타</span>',pr:'<span class="badge b-pr">대주자</span>',def:'<span class="badge b-def">수비교체</span>',out:'<span class="badge b-out">교체아웃</span>'};
+  return map[p.status]||'';
+}
+
+function renderRoster(team){
+  const el=document.getElementById('panel-roster'+team);
+  const tname=getTeamName(team);
+  const players=g.rosters[team];
+  const order=g.lineupOrder[team];
+
+  let html=`<div class="sec-title">선수 등록 — ${tname}</div>`;
+  html+=`<div class="card"><div class="row" style="margin-bottom:0">
+    <input type="number" id="newNum${team}" placeholder="등번호" style="width:65px" min="1" max="99"/>
+    <input type="text" id="newName${team}" placeholder="선수명" style="flex:1"/>
+    <select id="newPos${team}" style="width:95px">${POSITIONS.map(p=>`<option>${p}</option>`).join('')}</select>
+    <button class="btn primary" onclick="addPlayer('${team}')"><i class="ti ti-plus"></i> 등록</button>
+  </div></div>`;
+
+  // 타순표
+  html+=`<div class="sec-title" style="margin-top:.5rem">타순 설정 <span style="font-size:10px;color:#aaa;font-weight:400;text-transform:none">— 순서 드래그 또는 ▲▼ 조정</span></div>`;
+  html+=`<div class="card" style="padding:.75rem" id="orderList${team}">`;
+  if(!order.length){html+=`<div style="font-size:13px;color:#888">선수를 등록하면 타순에 자동 추가됩니다</div>`;}
+  order.forEach((pid,idx)=>{
+    const p=players.find(x=>x.id===pid);
+    if(!p)return;
+    const i=idx%8;
+    const isCur=String(pid)===String(g.curBatter)&&team===battingTeam();
+    html+=`<div class="order-row" draggable="true" data-team="${team}" data-idx="${idx}" id="orderrow-${team}-${idx}"
+      ondragstart="dragStart(event,'${team}',${idx})"
+      ondragover="dragOver(event)"
+      ondrop="dragDrop(event,'${team}',${idx})">
+      <div class="order-num ${isCur?'cur':''}">${idx+1}</div>
+      <div class="avatar" style="background:${AV_BG[i]};color:${AV_TX[i]}">${p.name.slice(0,2)}</div>
+      <span style="font-size:12px;color:#aaa;min-width:28px">#${p.num}</span>
+      <span style="font-size:13px;flex:1;font-weight:${p.status==='out'?'400':'600'};color:${p.status==='out'?'#aaa':'#1a1a1a'}">${p.name}</span>
+      <span style="font-size:11px;color:#888">${p.pos}</span>
+      ${statusBadge(p)}
+      <button class="order-arrow" onclick="moveOrder('${team}',${idx},-1)" title="위로">▲</button>
+      <button class="order-arrow" onclick="moveOrder('${team}',${idx},1)" title="아래로">▼</button>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // 전체 선수 목록 (타순 미포함 포함)
+  const notInOrder=players.filter(p=>!order.includes(p.id));
+  if(notInOrder.length){
+    html+=`<div class="sec-title" style="margin-top:.5rem">타순 미등록 선수</div><div class="card" style="padding:.75rem">`;
+    notInOrder.forEach((p,idx)=>{
+      const i=idx%8;
+      html+=`<div class="player-row">
+        <div class="avatar" style="background:${AV_BG[i]};color:${AV_TX[i]}">${p.name.slice(0,2)}</div>
+        <span class="num-tag">#${p.num}</span>
+        <input type="text" value="${p.name}" style="flex:1;border:none;border-bottom:1px solid #eee;background:transparent;font-family:inherit;font-size:13px;padding:2px 0" onchange="updatePlayerName('${team}',${p.id},this.value)"/>
+        <select class="pos-sel" onchange="updatePlayerPos('${team}',${p.id},this.value)">${POSITIONS.map(pos=>`<option${pos===p.pos?' selected':''}>${pos}</option>`).join('')}</select>
+        ${statusBadge(p)}
+        <button class="btn" style="padding:3px 8px;font-size:11px" onclick="addToOrder('${team}',${p.id})">타순추가</button>
+        <button class="btn danger" style="padding:3px 8px;font-size:11px" onclick="removePlayer('${team}',${p.id})"><i class="ti ti-trash"></i></button>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // 타순에 있는 선수 수정/삭제 옵션
+  html+=`<div class="sec-title" style="margin-top:.5rem">선수 관리</div>`;
+  html+=`<div class="card" style="padding:.75rem">`;
+  players.forEach((p,idx)=>{
+    const i=idx%8;
+    html+=`<div class="player-row">
+      <div class="avatar" style="background:${AV_BG[i]};color:${AV_TX[i]}">${p.name.slice(0,2)}</div>
+      <span class="num-tag">#${p.num}</span>
+      <input type="text" value="${p.name}" style="flex:1;border:none;border-bottom:1px solid #eee;background:transparent;font-family:inherit;font-size:13px;padding:2px 0" onchange="updatePlayerName('${team}',${p.id},this.value)"/>
+      <select class="pos-sel" onchange="updatePlayerPos('${team}',${p.id},this.value)">${POSITIONS.map(pos=>`<option${pos===p.pos?' selected':''}>${pos}</option>`).join('')}</select>
+      ${statusBadge(p)}
+      <button class="btn" style="padding:3px 8px;font-size:11px" onclick="toggleBench('${team}',${p.id})">${p.status==='bench'?'복귀':'벤치'}</button>
+      <button class="btn danger" style="padding:3px 8px;font-size:11px" onclick="removePlayer('${team}',${p.id})"><i class="ti ti-trash"></i></button>
+    </div>`;
+  });
+  if(!players.length) html+=`<div style="font-size:13px;color:#888">등록된 선수 없음</div>`;
+  html+=`</div>`;
+
+  el.innerHTML=html;
+}
+
+// 드래그앤드롭 타순 변경
+let _dragIdx=null, _dragTeam=null;
+function dragStart(e,team,idx){_dragTeam=team;_dragIdx=idx;e.dataTransfer.effectAllowed='move';}
+function dragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';}
+function dragDrop(e,team,idx){
+  e.preventDefault();
+  if(_dragTeam!==team||_dragIdx===idx)return;
+  const arr=g.lineupOrder[team];
+  const [item]=arr.splice(_dragIdx,1);
+  arr.splice(idx,0,item);
+  // 현재 타순 인덱스 보정
+  if(g.lineupIdx[team]===_dragIdx) g.lineupIdx[team]=idx;
+  renderRoster(team);
+}
+
+function moveOrder(team,idx,dir){
+  const arr=g.lineupOrder[team];
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=arr.length)return;
+  [arr[idx],arr[newIdx]]=[arr[newIdx],arr[idx]];
+  if(g.lineupIdx[team]===idx) g.lineupIdx[team]=newIdx;
+  else if(g.lineupIdx[team]===newIdx) g.lineupIdx[team]=idx;
+  renderRoster(team);
+}
+
+function addToOrder(team,id){
+  if(!g.lineupOrder[team].includes(id)) g.lineupOrder[team].push(id);
+  renderRoster(team);
+}
+
+function addPlayer(team){
+  const num=parseInt(document.getElementById('newNum'+team).value)||g.rosters[team].length+1;
+  const name=document.getElementById('newName'+team).value.trim()||('선수'+(g.rosters[team].length+1));
+  const pos=document.getElementById('newPos'+team).value;
+  const p=mkPlayer(num,name,pos);
+  g.rosters[team].push(p);
+  g.lineupOrder[team].push(p.id); // 자동으로 타순 맨 뒤 추가
+  document.getElementById('newNum'+team).value='';
+  document.getElementById('newName'+team).value='';
+  renderRoster(team);
+  updateBatterPitcherSelects();
+}
+
+function removePlayer(team,id){
+  if(!confirm('삭제하시겠습니까?'))return;
+  g.rosters[team]=g.rosters[team].filter(p=>p.id!==id);
+  g.lineupOrder[team]=g.lineupOrder[team].filter(x=>x!==id);
+  renderRoster(team);
+  updateBatterPitcherSelects();
+}
+
+function updatePlayerName(team,id,val){
+  const p=g.rosters[team].find(x=>x.id===id);
+  if(p&&val.trim())p.name=val.trim();
+  updateBatterPitcherSelects();
+}
+
+function updatePlayerPos(team,id,val){
+  const p=g.rosters[team].find(x=>x.id===id);
+  if(p)p.pos=val;
+}
+
+function toggleBench(team,id){
+  const p=g.rosters[team].find(x=>x.id===id);
+  if(!p||p.status==='out')return;
+  p.status=p.status==='bench'?'active':'bench';
+  renderRoster(team);
+}
+
+// ===================== 타자/투수 셀렉트 =====================
+function updateBatterPitcherSelects(){
+  const bt=battingTeam();
+  const pt=pitchingTeam();
+  const bs=document.getElementById('curBatterSel');
+  const ps=document.getElementById('curPitcherSel');
+  if(!bs||!ps)return;
+
+  // 타자: 타순 순서대로
+  const order=g.lineupOrder[bt];
+  const bPlayers=order.map(id=>g.rosters[bt].find(p=>p.id===id)).filter(p=>p&&p.status!=='out');
+  const pPlayers=g.rosters[pt].filter(p=>p.pos==='투수'&&p.status!=='out');
+
+  bs.innerHTML='<option value="">-- 선택 --</option>'+bPlayers.map((p,i)=>{
+    const orderNum=order.indexOf(p.id)+1;
+    return `<option value="${p.id}">${orderNum}번 #${p.num} ${p.name}</option>`;
+  }).join('');
+  ps.innerHTML='<option value="">-- 선택 --</option>'+pPlayers.map(p=>`<option value="${p.id}">#${p.num} ${p.name}</option>`).join('');
+
+  if(g.curBatter) bs.value=g.curBatter;
+  if(g.curPitcher) ps.value=g.curPitcher;
+
+  // 현재 타순 번호 표시
+  if(g.curBatter){
+    const orderNum=order.indexOf(parseInt(g.curBatter)||g.curBatter)+1;
+    const el=document.getElementById('curBatterInfo');
+    if(el&&orderNum>0) el.textContent=`(${orderNum}번 타자)`;
+  }
+}
+
+// ===================== 렌더링 =====================
+function renderGame(){
+  document.getElementById('scA').textContent=g.scoreA;
+  document.getElementById('scB').textContent=g.scoreB;
+  document.getElementById('lblA').textContent=document.getElementById('teamA').value||'홈팀';
+  document.getElementById('lblB').textContent=document.getElementById('teamB').value||'원정팀';
+  document.getElementById('inningNum').textContent=g.inning;
+  const hb=document.getElementById('halfBadge');
+  hb.textContent=g.half==='top'?'초':'말';
+  hb.className='half-badge '+(g.half==='top'?'half-top':'half-bot');
+  renderDots('ballDots',g.balls,4,'ball');
+  renderDots('strikeDots',g.strikes,3,'strike');
+  renderDots('outDots',g.outs,3,'out');
+  document.getElementById('ballN').textContent=g.balls;
+  document.getElementById('strikeN').textContent=g.strikes;
+  document.getElementById('outN').textContent=g.outs;
+  renderOutCircles();renderBases();renderStatus();renderScoreboard();renderPitchLog();
+  updateBatterPitcherSelects();
+}
+
+function renderDots(id,val,max,type){
+  const el=document.getElementById(id);el.innerHTML='';
+  for(let i=0;i<max;i++){const d=document.createElement('div');d.className='dot'+(i<val?' '+type+'-on':'');el.appendChild(d);}
+}
+
+function renderOutCircles(){
+  const el=document.getElementById('outCircles');el.innerHTML='';
+  for(let i=0;i<3;i++){const c=document.createElement('div');c.className='out-circle'+(i<g.outs?' filled':'');el.appendChild(c);}
+}
+
+function renderBases(){
+  [['bH',0],['b1',1],['b2',2],['b3',3]].forEach(([id,i])=>{
+    const el=document.getElementById(id);
+    if(el)el.className.baseVal='base-'+(g.bases[i]?'on':'empty');
+  });
+}
+
+function renderStatus(){
+  const runners=[];
+  if(g.bases[1])runners.push('1루');
+  if(g.bases[2])runners.push('2루');
+  if(g.bases[3])runners.push('3루');
+  const batting=g.half==='top'?getTeamName('B'):getTeamName('A');
+  const bt=battingTeam();
+  const order=g.lineupOrder[bt];
+  const orderNum=order.indexOf(parseInt(g.curBatter)||g.curBatter)+1;
+  const cur=g.rosters[bt].find(p=>String(p.id)===String(g.curBatter));
+  const bname=cur?`${orderNum>0?orderNum+'번 ':''}#${cur.num} ${cur.name}`:'미선택';
+  document.getElementById('statusSummary').innerHTML=
+    `공격: <strong>${batting}</strong><br>타자: ${bname}<br>주자: ${runners.length?runners.join(', '):'없음'}<br>카운트: ${g.balls}볼 ${g.strikes}스트 ${g.outs}아웃`;
+}
+
+function renderScoreboard(){
+  const max=Math.max(9,g.inning);
+  let th='<tr><th style="text-align:left;width:56px">팀</th>';
+  for(let i=1;i<=max;i++)th+=`<th style="width:22px">${i}</th>`;
+  th+='<th style="width:26px">R</th></tr>';
+  document.getElementById('sbHead').innerHTML=th;
+  const tA=getTeamName('A'),tB=getTeamName('B');
+  let rA=`<tr><td style="text-align:left;font-weight:600;font-size:12px">${tA}</td>`;
+  let rB=`<tr><td style="text-align:left;font-weight:600;font-size:12px">${tB}</td>`;
+  for(let i=1;i<=max;i++){
+    const ka=`A-${i}`,kb=`B-${i}`;
+    rA+=`<td>${g.inningScores[ka]!==undefined?g.inningScores[ka]:(i<g.inning||(i===g.inning&&g.half==='bot')?'-':'')}</td>`;
+    rB+=`<td>${g.inningScores[kb]!==undefined?g.inningScores[kb]:(i<g.inning?'-':'')}</td>`;
+  }
+  rA+=`<td><strong>${g.scoreA}</strong></td></tr>`;
+  rB+=`<td><strong>${g.scoreB}</strong></td></tr>`;
+  document.getElementById('sbBody').innerHTML=rA+rB;
+}
+
+function renderPitchLog(){
+  const el=document.getElementById('pitchLog');
+  if(!g.pitchLog.length){el.innerHTML='<span style="font-size:12px;color:#aaa">없음</span>';return;}
+  el.innerHTML=g.pitchLog.map(p=>`<span class="ptag ptag-${p.type}">${p.label}</span>`).join('');
+}
+
+// ===================== 기타 함수 =====================
+function addScoreToTeam(team,n){
+  if(team==='A') g.scoreA+=n;
+  else g.scoreB+=n;
+  const key=team+'-'+g.inning;
+  g.inningScores[key]=(g.inningScores[key]||0)+n;
+  const el=document.getElementById('sc'+team);
+  if(el){el.classList.remove('score-flash');void el.offsetWidth;el.classList.add('score-flash');}
+}
+
+function resetCount(){g.balls=0;g.strikes=0;renderGame();}
+function toggleBase(i){g.bases[i]=!g.bases[i];renderGame();}
+function chScore(t,d){if(t==='A')g.scoreA=Math.max(0,g.scoreA+d);else g.scoreB=Math.max(0,g.scoreB+d);renderGame();}
+
+function toggleHalf(){
+  if(g.half==='top'){g.half='bot';}else{g.half='top';g.inning=Math.min(g.inning+1,20);}
+  g.balls=0;g.strikes=0;g.outs=0;g.pitchLog=[];g.bases=[false,false,false,false];
+  // 이닝 전환 시 타순 인덱스는 유지 (KBO: 마지막 타자 다음부터)
+  renderGame();
+  showToast(`${g.inning}회 ${g.half==='top'?'초':'말'} 시작`);
+}
+
+function nextInning(){toggleHalf();}
+
+function chInning(d){
+  g.inning=Math.max(1,Math.min(20,g.inning+d));
+  g.balls=0;g.strikes=0;g.outs=0;g.pitchLog=[];g.bases=[false,false,false,false];
+  renderGame();
+}
+
+function logPitch(label,type){g.pitchLog.push({label,type});renderPitchLog();}
+function undoPitch(){if(g.pitchLog.length)g.pitchLog.pop();renderPitchLog();}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
+  clearTimeout(g._tt);g._tt=setTimeout(()=>t.style.display='none',2500);
+}
+
+// ===================== 교체 =====================
+function renderSubForm(){
+  const team=document.getElementById('subTeamSel').value;
+  const type=document.getElementById('subTypeSel').value;
+  const players=g.rosters[team];
+  const tname=getTeamName(team);
+  const outPlayers=players.filter(p=>['active','ph','pr','def'].includes(p.status));
+  const inPlayers=players.filter(p=>['bench','active'].includes(p.status));
+  let outLabel=type==='ph'?'대타 대상 타자':type==='pr'?'대주자 대상 주자':'교체 나가는 선수';
+  document.getElementById('subFormOut').innerHTML=`
+    <div style="font-size:11px;color:#888;margin-bottom:4px">${outLabel} (${tname})</div>
+    <select id="subOutSel" style="width:100%">
+      <option value="">-- 선택 --</option>
+      ${outPlayers.map(p=>`<option value="${p.id}">#${p.num} ${p.name} (${p.pos})</option>`).join('')}
+    </select>`;
+  document.getElementById('subFormIn').innerHTML=`
+    <div style="font-size:11px;color:#888;margin-bottom:4px">투입 선수 (${tname})</div>
+    <select id="subInSel" style="width:100%">
+      <option value="">-- 선택 --</option>
+      ${inPlayers.map(p=>`<option value="${p.id}">#${p.num} ${p.name} (${p.pos})</option>`).join('')}
+    </select>`;
+  document.getElementById('subPosRow').style.display=(type==='def'||type==='p')?'block':'none';
+}
+
+function doSub(){
+  const team=document.getElementById('subTeamSel').value;
+  const type=document.getElementById('subTypeSel').value;
+  const outId=parseInt(document.getElementById('subOutSel').value);
+  const inId=parseInt(document.getElementById('subInSel').value);
+  const reason=document.getElementById('subReason').value.trim();
+  const newPos=document.getElementById('subNewPos').value;
+  if(!outId||!inId){showToast('선수를 선택하세요');return;}
+  if(outId===inId){showToast('같은 선수입니다');return;}
+  const outP=g.rosters[team].find(p=>p.id===outId);
+  const inP=g.rosters[team].find(p=>p.id===inId);
+  if(!outP||!inP)return;
+  const typeLabel={ph:'대타',pr:'대주자',def:'수비교체',p:'투수교체'}[type];
+  inP.pos=(type==='def'||type==='p')?newPos:outP.pos;
+  inP.status=type==='ph'?'ph':type==='pr'?'pr':type==='def'?'def':'active';
+  outP.status='out';
+  // 타순에서 나가는 선수 자리를 들어오는 선수로 교체
+  const orderArr=g.lineupOrder[team];
+  const outIdx=orderArr.indexOf(outId);
+  if(outIdx>=0) orderArr[outIdx]=inId;
+  g.subLog.unshift({
+    inning:g.inning,half:g.half,team,type:typeLabel,
+    out:`#${outP.num} ${outP.name}`, in:`#${inP.num} ${inP.name}`,
+    pos:inP.pos, reason,
+    time:new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})
+  });
+  showToast(`${typeLabel}: #${inP.num} ${inP.name} 투입`);
+  document.getElementById('subReason').value='';
+  renderSubLog();updateBatterPitcherSelects();
+}
+
+function renderSubLog(){
+  const el=document.getElementById('subLogList');
+  if(!g.subLog.length){el.innerHTML='<div style="font-size:13px;color:#888">교체 기록 없음</div>';return;}
+  const tc={대타:'b-ph',대주자:'b-pr',수비교체:'b-def',투수교체:'b-sub'};
+  el.innerHTML=g.subLog.map(e=>`
+    <div class="sub-log-item">
+      <span class="badge ${tc[e.type]||'b-bench'}">${e.type}</span>
+      <span style="margin:0 5px">${e.inning}회 ${e.half==='top'?'초':'말'}</span>
+      <strong>${e.in}</strong> 투입 / <span style="color:#888">${e.out} 아웃</span>
+      ${e.reason?`<span style="color:#aaa"> · ${e.reason}</span>`:''}
+      <span style="float:right;color:#aaa;font-size:11px">${e.time}</span>
+    </div>`).join('');
+}
+
+// ===================== 초기화/복사 =====================
+function resetAll(){
+  if(!confirm('모든 기록을 초기화할까요?'))return;
+  g.scoreA=0;g.scoreB=0;g.inning=1;g.half='top';
+  g.balls=0;g.strikes=0;g.outs=0;g.bases=[false,false,false,false];
+  g.pitchLog=[];g.inningScores={};g.subLog=[];
+  g.lineupIdx={A:0,B:0};g.curBatter='';g.curPitcher='';
+  g.rosters.A.forEach(p=>{if(p.status==='out')p.status='bench';});
+  g.rosters.B.forEach(p=>{if(p.status==='out')p.status='bench';});
+  document.getElementById('memoInput').value='';
+  renderGame();showToast('초기화 완료');
+}
+
+function copyReport(){
+  const tA=getTeamName('A'),tB=getTeamName('B');
+  const subText=g.subLog.map(e=>`  ${e.inning}회${e.half==='top'?'초':'말'} [${e.type}] ${e.in} 투입 / ${e.out} 아웃${e.reason?' ('+e.reason+')':''}`).join('\n');
+  const text=`[야구 심판 기록]\n${tA} ${g.scoreA} : ${g.scoreB} ${tB}\n현재: ${g.inning}회 ${g.half==='top'?'초':'말'}\n카운트: ${g.balls}볼 ${g.strikes}스트 ${g.outs}아웃\n주자: ${[g.bases[1]?'1루':'',g.bases[2]?'2루':'',g.bases[3]?'3루':''].filter(Boolean).join(', ')||'없음'}\n\n교체기록:\n${subText||'없음'}\n\n투구기록: ${g.pitchLog.map(p=>p.label).join(', ')||'없음'}\n메모: ${document.getElementById('memoInput').value||'없음'}`;
+  navigator.clipboard.writeText(text).then(()=>showToast('복사 완료')).catch(()=>{alert(text);});
+}
+
+// ===================== 이벤트 =====================
+document.getElementById('teamA').addEventListener('input',()=>{renderGame();document.querySelectorAll('.tab')[1].textContent=document.getElementById('teamA').value||'홈팀';});
+document.getElementById('teamB').addEventListener('input',()=>{renderGame();document.querySelectorAll('.tab')[2].textContent=document.getElementById('teamB').value||'원정팀';});
+
+initRosters();
+renderGame();
+</script>
+</body>
+</html>.player-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0}
 .player-row:last-child{border-bottom:none}
 .pos-sel{font-size:12px;width:82px}
 .num-tag{font-size:12px;color:#aaa;min-width:28px;text-align:right}
