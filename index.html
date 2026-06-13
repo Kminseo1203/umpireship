@@ -534,14 +534,24 @@ function renderPitchLog(){
 }
 
 function addCount(type){
-  if(type==='ball'){g.balls++;if(g.balls>=4){logPitch('볼넷','ball');resetCount();showToast('볼넷 — 다음 타자');return;}}
+  if(type==='ball'){g.balls++;if(g.balls>=4){logPitch('볼넷','ball');g.balls=0;g.strikes=0;nextBatter();return;}}
   else if(type==='strike'){g.strikes++;if(g.strikes>=3){logPitch('삼진','out');g.strikes=0;addCount('out');return;}}
-  else if(type==='out'){g.outs++;resetCount(true);if(g.outs>=3){showToast('3아웃! 이닝 전환');setTimeout(nextInning,600);return;}}
+  else if(type==='out'){g.outs++;g.balls=0;g.strikes=0;if(g.outs>=3){showToast('3아웃! 이닝 전환');setTimeout(nextInning,600);return;}}
   renderGame();
 }
 
 function resetCount(keepOuts){g.balls=0;g.strikes=0;if(!keepOuts)g.outs=0;renderGame();}
-function nextBatter(){g.balls=0;g.strikes=0;renderGame();showToast('다음 타자');}
+function nextBatter(){
+  g.balls=0;g.strikes=0;
+  const battingTeam=g.half==='top'?'B':'A';
+  const active=activePlayers(battingTeam);
+  if(active.length>0){
+    const curIdx=active.findIndex(p=>String(p.id)===String(g.curBatter));
+    const nextIdx=(curIdx+1)%active.length;
+    g.curBatter=String(active[nextIdx].id);
+  }
+  renderGame();showToast('다음 타자: '+(active.length>0?active[(active.findIndex(p=>String(p.id)===String(g.curBatter)))].name:''));
+}
 function chScore(t,d){if(t==='A')g.scoreA=Math.max(0,g.scoreA+d);else g.scoreB=Math.max(0,g.scoreB+d);renderGame();}
 function toggleBase(i){g.bases[i]=!g.bases[i];renderGame();}
 
