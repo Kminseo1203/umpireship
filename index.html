@@ -75,8 +75,6 @@ input:focus,select:focus,textarea:focus{border-color:#666}
 .sb-table th,.sb-table td{padding:5px;text-align:center;border-bottom:1px solid #f0f0f0}
 .sb-table th{color:#888;font-weight:600}
 .sub-log-item{font-size:12px;padding:5px 10px;border-radius:8px;background:#f5f5f5;margin-bottom:5px;line-height:1.6}
-
-/* ── KBO 규정 패널 ── */
 .kbo-panel{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1rem;margin-bottom:10px}
 .kbo-panel-title{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .kbo-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f5f5f5}
@@ -85,16 +83,12 @@ input:focus,select:focus,textarea:focus{border-color:#666}
 .kbo-counter{display:flex;align-items:center;gap:6px}
 .kbo-count-val{font-size:14px;font-weight:700;min-width:20px;text-align:center}
 .kbo-count-max{font-size:11px;color:#aaa}
-.kbo-ok{color:#0f6e56}
-.kbo-warn{color:#854f0b}
-.kbo-over{color:#a32d2d}
+.kbo-ok{color:#0f6e56}.kbo-warn{color:#854f0b}.kbo-over{color:#a32d2d}
 .kbo-timer-wrap{display:flex;align-items:center;gap:8px;margin-top:8px}
 .kbo-timer-box{flex:1;background:#f5f5f5;border-radius:8px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between}
 .kbo-timer-label{font-size:11px;color:#888}
 .kbo-timer-val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
-.kbo-timer-val.ok{color:#0f6e56}
-.kbo-timer-val.warn{color:#854f0b}
-.kbo-timer-val.over{color:#a32d2d}
+.kbo-timer-val.ok{color:#0f6e56}.kbo-timer-val.warn{color:#854f0b}.kbo-timer-val.over{color:#a32d2d}
 .timer-btn{padding:5px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:12px;font-family:inherit;cursor:pointer}
 .timer-btn.active-timer{background:#e24b4a;color:#fff;border-color:#e24b4a}
 .kbo-rule-note{font-size:11px;color:#aaa;margin-top:4px;line-height:1.5}
@@ -103,8 +97,6 @@ input:focus,select:focus,textarea:focus{border-color:#666}
 .kbo-pip span.used{background:#e24b4a;border-color:#a32d2d}
 .kbo-reset-btn{padding:3px 8px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:11px;cursor:pointer;color:#888}
 .kbo-reset-btn:hover{background:#f5f5f5}
-
-/* 모달 공통 */
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center}
 .modal-box{background:#fff;border-radius:14px;padding:1.25rem;min-width:280px;max-width:380px;width:90%;max-height:90vh;overflow-y:auto}
 .modal-title{font-size:15px;font-weight:600;margin-bottom:4px}
@@ -163,7 +155,6 @@ input:focus,select:focus,textarea:focus{border-color:#666}
     <button class="btn" onclick="chInning(1)" style="padding:4px 9px"><i class="ti ti-chevron-right"></i></button>
   </div>
 
-  <!-- KBO 규정 빠른 패널 (경기탭 인라인) -->
   <div class="kbo-panel" id="kboInlinePanel">
     <div class="kbo-panel-title"><i class="ti ti-stopwatch" style="font-size:15px"></i> KBO 규정 현황</div>
     <div class="kbo-row">
@@ -193,7 +184,6 @@ input:focus,select:focus,textarea:focus{border-color:#666}
         <button class="kbo-reset-btn" onclick="resetCatcherMound()">초기화</button>
       </div>
     </div>
-    <!-- 타이머 -->
     <div style="margin-top:10px">
       <div style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">타이머</div>
       <div class="kbo-timer-wrap" style="flex-wrap:wrap;gap:6px">
@@ -233,7 +223,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
   <div class="card" style="margin-bottom:10px">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div>
-        <div style="font-size:11px;color:#888;margin-bottom:4px">타자 (공격팀)</div>
+        <div style="font-size:11px;color:#888;margin-bottom:4px">타자 (공격팀 — 투수 제외)</div>
         <select id="curBatterSel" style="width:100%" onchange="g.curBatter=this.value;renderStatus();save()"></select>
       </div>
       <div>
@@ -391,7 +381,6 @@ input:focus,select:focus,textarea:focus{border-color:#666}
 <!-- KBO 규정 상세 탭 -->
 <div class="panel" id="panel-kbo">
   <div class="sec-title">KBO 경기 스피드업 규정 (2025)</div>
-
   <div class="kbo-panel">
     <div class="kbo-panel-title">⏱ 타이머</div>
     <div style="display:flex;flex-direction:column;gap:8px">
@@ -399,7 +388,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
         <div>
           <div class="kbo-timer-label">🏟 마운드 방문 제한 시간 (30초)</div>
           <div class="kbo-timer-val ok" id="moundTimerVal2">0:30</div>
-          <div class="kbo-rule-note">감독/코치 마운드 방문 시 30초 제한. 25초 경과 시 복귀 통보. (KBO 스피드업 규정 3조 ④항)</div>
+          <div class="kbo-rule-note">감독/코치 마운드 방문 시 30초 제한. 25초 경과 시 복귀 통보.</div>
         </div>
         <button class="timer-btn" id="moundTimerBtn2" onclick="toggleTimer('mound')">▶ 시작</button>
       </div>
@@ -407,7 +396,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
         <div>
           <div class="kbo-timer-label">🔄 이닝 교대 시간 (2분 00초)</div>
           <div class="kbo-timer-val ok" id="inningTimerVal2">2:00</div>
-          <div class="kbo-rule-note">마지막 아웃 ~ 첫 투구까지 최대 2분. 1분55초까지 타자 타석 입장. (KBO 스피드업 규정 2조 ②항)</div>
+          <div class="kbo-rule-note">마지막 아웃 ~ 첫 투구까지 최대 2분. 1분55초까지 타자 타석 입장.</div>
         </div>
         <button class="timer-btn" id="inningTimerBtn2" onclick="toggleTimer('inning')">▶ 시작</button>
       </div>
@@ -415,7 +404,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
         <div>
           <div class="kbo-timer-label">🔀 투수 교체 시간 (2분 20초)</div>
           <div class="kbo-timer-val ok" id="pitchChangerTimerVal2">2:20</div>
-          <div class="kbo-rule-note">감독 타임 요청 → 다음 타자 타석 입장까지. 타자는 2분15초 이내 입장. (KBO 스피드업 규정 3조 ①②항)</div>
+          <div class="kbo-rule-note">감독 타임 요청 → 다음 타자 타석 입장까지. 타자는 2분15초 이내 입장.</div>
         </div>
         <button class="timer-btn" id="pitchChangerTimerBtn2" onclick="toggleTimer('pitchChanger')">▶ 시작</button>
       </div>
@@ -423,24 +412,23 @@ input:focus,select:focus,textarea:focus{border-color:#666}
         <div>
           <div class="kbo-timer-label">⏱ 투구 간격 — 주자 없을 때 (12초)</div>
           <div class="kbo-timer-val ok" id="pitchTimerVal2">0:12</div>
-          <div class="kbo-rule-note">주자 없을 때 공 받은 후 12초 이내 투구. 1회 위반 경고, 이후 볼 선언 + 벌금. (KBO 스피드업 규정 4조 ③항)</div>
+          <div class="kbo-rule-note">주자 없을 때 공 받은 후 12초 이내 투구. 1회 위반 경고, 이후 볼 선언 + 벌금.</div>
         </div>
         <button class="timer-btn" id="pitchTimerBtn2" onclick="toggleTimer('pitch')">▶ 시작</button>
       </div>
     </div>
   </div>
-
   <div class="kbo-panel">
     <div class="kbo-panel-title">📋 횟수 추적</div>
     <div class="kbo-row">
       <div>
-        <div class="kbo-label">⚾ 공격팀 타임 — 이닝당 최대 2회</div>
-        <div class="kbo-rule-note" style="margin-top:2px">위반 시 타임 불허. (KBO 스피드업 규정 1조 ⑤항)</div>
+        <div class="kbo-label">⚾ 공격팀 타임 — 이닝당 최대 3회</div>
+        <div class="kbo-rule-note" style="margin-top:2px">위반 시 타임 불허.</div>
       </div>
       <div class="kbo-counter" style="flex-direction:column;align-items:flex-end;gap:4px">
         <div style="display:flex;align-items:center;gap:6px">
           <div class="kbo-pip" id="offTimePips2"></div>
-          <span class="kbo-count-val" id="offTimeVal2">0</span><span class="kbo-count-max">/ 2</span>
+          <span class="kbo-count-val" id="offTimeVal2">0</span><span class="kbo-count-max">/ 3</span>
           <button class="timer-btn" onclick="useOffTime()" style="font-size:11px;padding:3px 8px">사용</button>
           <button class="kbo-reset-btn" onclick="resetOffTime()">초기화</button>
         </div>
@@ -449,7 +437,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
     <div class="kbo-row">
       <div>
         <div class="kbo-label">🏃 감독/코치 마운드 방문 — 경기당 최대 2회</div>
-        <div class="kbo-rule-note" style="margin-top:2px">2회 방문 시 투수교체 의무. 부상 제외. (KBO 스피드업 규정 3조 ③항)</div>
+        <div class="kbo-rule-note" style="margin-top:2px">2회 방문 시 투수교체 의무. 부상 제외.</div>
       </div>
       <div class="kbo-counter" style="flex-direction:column;align-items:flex-end;gap:4px">
         <div style="display:flex;align-items:center;gap:6px">
@@ -463,7 +451,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
     <div class="kbo-row">
       <div>
         <div class="kbo-label">🥎 포수 마운드 방문 — 정규이닝 경기당 2회 (연장 +1회)</div>
-        <div class="kbo-rule-note" style="margin-top:2px">위반 시 포수 교체. (KBO 스피드업 규정 1조 ⑦항)</div>
+        <div class="kbo-rule-note" style="margin-top:2px">위반 시 포수 교체.</div>
       </div>
       <div class="kbo-counter" style="flex-direction:column;align-items:flex-end;gap:4px">
         <div style="display:flex;align-items:center;gap:6px">
@@ -478,7 +466,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
     <div class="kbo-row">
       <div>
         <div class="kbo-label">🆕 투수당 볼 교체 — 이닝당 최대 3개 (첫 볼 제외)</div>
-        <div class="kbo-rule-note" style="margin-top:2px">우천 시 제외. (KBO 스피드업 규정 4조 ⑧항)</div>
+        <div class="kbo-rule-note" style="margin-top:2px">우천 시 제외.</div>
       </div>
       <div class="kbo-counter" style="flex-direction:column;align-items:flex-end;gap:4px">
         <div style="display:flex;align-items:center;gap:6px">
@@ -490,7 +478,6 @@ input:focus,select:focus,textarea:focus{border-color:#666}
       </div>
     </div>
   </div>
-
   <div class="kbo-panel">
     <div class="kbo-panel-title">📖 주요 규정 요약</div>
     <div style="font-size:12px;line-height:2;color:#555">
@@ -502,20 +489,22 @@ input:focus,select:focus,textarea:focus{border-color:#666}
       <div>📌 <b>클리닝 타임</b>: 최대 4분. 2분 30초에 심판 그라운드 대기.</div>
       <div>📌 <b>수비팀 마운드 회의</b>: 타임 후 마운드 회의는 30초 이내.</div>
       <div>📌 <b>투수 — 불필요 볼 교환 금지</b>: 우천 제외, 이닝당 3개까지.</div>
+      <div>📌 <b>지명타자(DH)</b>: 투수는 타자로 출전 불가. DH 없을 시 투수가 타순에 들어가면 DH 제도 소멸.</div>
     </div>
   </div>
 </div>
 </div><!-- /app -->
 
 <script>
-// ════════════════════════════════════════
-//  STATE
-// ════════════════════════════════════════
 const SAVE_KEY = 'baseball_umpire_v3';
-const ROSTER_KEY = 'baseball_umpire_rosters_v1'; // 선수 정보 별도 저장
+const ROSTER_KEY = 'baseball_umpire_rosters_v1';
 const POSITIONS = ['투수','포수','1루수','2루수','3루수','유격수','좌익수','중견수','우익수','지명타자'];
 const AV_BG = ['#e6f1fb','#e1f5ee','#eeedfe','#faeeda','#faece7','#eaf3de','#fbeaf0','#fcebeb'];
 const AV_TX = ['#185fa5','#0f6e56','#3c3489','#854f0b','#993c1d','#3b6d11','#993556','#a32d2d'];
+
+// ─── 지명타자(DH) 사용 여부 — true면 투수는 타자 목록에서 제외
+// KBO는 기본적으로 DH 사용. 투수는 타석에 설 수 없음.
+const USE_DH = true;
 
 let g = {
   scoreA:0, scoreB:0, inning:1, half:'top',
@@ -526,18 +515,16 @@ let g = {
   lineupIdx:{A:0, B:0},
   rosters:{A:[], B:[]},
   subLog:[], _pid:1,
-  // KBO 규정 카운터
   kbo:{
-    offTimeUsed:0,           // 공격팀 타임 (이닝당, 이닝 교대시 초기화)
-    moundVisitUsed:0,        // 감독/코치 마운드 방문 (경기당)
-    catcherMoundUsed:0,      // 포수 마운드 방문 (경기당)
-    catcherMoundMax:2,       // 기본 2회, 연장전 +1
-    ballChangeUsed:0,        // 볼 교체 (이닝당 투수당)
+    offTimeUsed:0,
+    moundVisitUsed:0,
+    catcherMoundUsed:0,
+    catcherMoundMax:2,
+    ballChangeUsed:0,
   },
   _tt:null, _saveT:null
 };
 
-// 타이머 상태 (저장 X)
 const timers = {
   mound:       { total:30,  remaining:30,  running:false, interval:null },
   inning:      { total:120, remaining:120, running:false, interval:null },
@@ -545,136 +532,97 @@ const timers = {
   pitch:       { total:12,  remaining:12,  running:false, interval:null },
 };
 
-// ════════════════════════════════════════
-//  SAVE / LOAD — 게임 상태
-// ════════════════════════════════════════
+// ════ SAVE / LOAD ════
 function saveState(){
   try{
-    const snap = {
-      ...g,
-      teamA: document.getElementById('teamA').value,
-      teamB: document.getElementById('teamB').value,
-      memo:  document.getElementById('memoInput').value,
-    };
+    const snap={...g,teamA:document.getElementById('teamA').value,teamB:document.getElementById('teamB').value,memo:document.getElementById('memoInput').value};
     delete snap._tt; delete snap._saveT;
-    // 선수 정보는 별도 키로 저장
-    const rosterSnap = { A: g.rosters.A, B: g.rosters.B, _pid: g._pid };
-    localStorage.setItem(ROSTER_KEY, JSON.stringify(rosterSnap));
-    // 게임 상태에서 rosters는 가볍게 저장
-    snap.rosters = null;
+    localStorage.setItem(ROSTER_KEY, JSON.stringify({A:g.rosters.A,B:g.rosters.B,_pid:g._pid}));
+    snap.rosters=null;
     localStorage.setItem(SAVE_KEY, JSON.stringify(snap));
-  } catch(e){ console.warn('저장 실패',e); }
+  }catch(e){console.warn('저장 실패',e);}
 }
-
 function loadRosters(){
   try{
-    const raw = localStorage.getItem(ROSTER_KEY);
-    if(!raw) return false;
-    const s = JSON.parse(raw);
-    g.rosters = { A: s.A || [], B: s.B || [] };
-    let maxId = 0;
-    [...(g.rosters.A||[]),...(g.rosters.B||[])].forEach(p=>{ if(p.id>maxId) maxId=p.id; });
-    g._pid = Math.max(s._pid || 1, maxId + 1);
+    const raw=localStorage.getItem(ROSTER_KEY); if(!raw) return false;
+    const s=JSON.parse(raw);
+    g.rosters={A:s.A||[],B:s.B||[]};
+    let maxId=0;
+    [...(g.rosters.A||[]),...(g.rosters.B||[])].forEach(p=>{if(p.id>maxId)maxId=p.id;});
+    g._pid=Math.max(s._pid||1,maxId+1);
     return true;
-  } catch(e){ return false; }
+  }catch(e){return false;}
 }
-
 function loadState(){
   try{
-    const raw = localStorage.getItem(SAVE_KEY);
-    if(!raw) return false;
-    const s = JSON.parse(raw);
+    const raw=localStorage.getItem(SAVE_KEY); if(!raw) return false;
+    const s=JSON.parse(raw);
     Object.assign(g,{
-      scoreA:s.scoreA||0, scoreB:s.scoreB||0,
-      inning:s.inning||1, half:s.half||'top',
-      balls:s.balls||0, strikes:s.strikes||0, outs:s.outs||0,
+      scoreA:s.scoreA||0,scoreB:s.scoreB||0,inning:s.inning||1,half:s.half||'top',
+      balls:s.balls||0,strikes:s.strikes||0,outs:s.outs||0,
       bases:s.bases||[false,false,false,false],
-      playLog:s.playLog||[], inningScores:s.inningScores||{},
-      curBatter:s.curBatter||'', curPitcher:s.curPitcher||'',
-      lineupIdx:s.lineupIdx||{A:0,B:0},
-      subLog:s.subLog||[],
-      kbo: Object.assign({
-        offTimeUsed:0,moundVisitUsed:0,catcherMoundUsed:0,catcherMoundMax:2,ballChangeUsed:0
-      }, s.kbo||{})
+      playLog:s.playLog||[],inningScores:s.inningScores||{},
+      curBatter:s.curBatter||'',curPitcher:s.curPitcher||'',
+      lineupIdx:s.lineupIdx||{A:0,B:0},subLog:s.subLog||[],
+      kbo:Object.assign({offTimeUsed:0,moundVisitUsed:0,catcherMoundUsed:0,catcherMoundMax:2,ballChangeUsed:0},s.kbo||{})
     });
     if(s.teamA) document.getElementById('teamA').value=s.teamA;
     if(s.teamB) document.getElementById('teamB').value=s.teamB;
     if(s.memo)  document.getElementById('memoInput').value=s.memo;
     return true;
-  } catch(e){ console.warn('불러오기 실패',e); return false; }
+  }catch(e){console.warn('불러오기 실패',e);return false;}
 }
-function save(){ saveState(); showSaveInd(); }
+function save(){saveState();showSaveInd();}
 function showSaveInd(){
-  const el=document.getElementById('saveInd');
-  if(!el) return;
+  const el=document.getElementById('saveInd'); if(!el) return;
   el.textContent='저장됨 ✓'; el.style.opacity='1';
-  clearTimeout(g._saveT);
-  g._saveT=setTimeout(()=>el.style.opacity='0',1600);
+  clearTimeout(g._saveT); g._saveT=setTimeout(()=>el.style.opacity='0',1600);
 }
 
-// ════════════════════════════════════════
-//  KBO 규정 — 횟수 카운터
-// ════════════════════════════════════════
+// ════ KBO 횟수 카운터 ════
 function useOffTime(){
-  if(g.kbo.offTimeUsed>=2){
-    showToast('⚠️ 공격팀 타임 한도 초과! (이닝당 2회) 타임 불허');
-    return;
-  }
+  if(g.kbo.offTimeUsed>=3){showToast('⚠️ 공격팀 타임 한도 초과! (이닝당 3회) 타임 불허');return;}
   g.kbo.offTimeUsed++;
-  if(g.kbo.offTimeUsed>=2) showToast('⚠️ 공격팀 타임 2회 소진 — 이 이닝 더이상 타임 불가');
-  else showToast(`공격팀 타임 ${g.kbo.offTimeUsed}/2회 사용`);
+  if(g.kbo.offTimeUsed>=3) showToast('⚠️ 공격팀 타임 3회 소진 — 이 이닝 더이상 타임 불가');
+  else showToast(`공격팀 타임 ${g.kbo.offTimeUsed}/3회 사용`);
   renderKboCounters(); save();
 }
-function resetOffTime(){ g.kbo.offTimeUsed=0; renderKboCounters(); save(); }
+function resetOffTime(){g.kbo.offTimeUsed=0;renderKboCounters();save();}
 
 function useMoundVisit(){
-  if(g.kbo.moundVisitUsed>=2){
-    showToast('⚠️ 마운드 방문 한도 초과! 투수 교체 의무');
-    return;
-  }
+  if(g.kbo.moundVisitUsed>=2){showToast('⚠️ 마운드 방문 한도 초과! 투수 교체 의무');return;}
   g.kbo.moundVisitUsed++;
   if(g.kbo.moundVisitUsed>=2) showToast('⚠️ 마운드 방문 2회 — 투수 교체 의무!');
   else showToast(`감독/코치 마운드 방문 ${g.kbo.moundVisitUsed}/2회`);
-  // 마운드 방문 타이머 자동 시작
   startTimer('mound');
   renderKboCounters(); save();
 }
-function resetMoundVisit(){ g.kbo.moundVisitUsed=0; renderKboCounters(); save(); }
+function resetMoundVisit(){g.kbo.moundVisitUsed=0;renderKboCounters();save();}
 
 function useCatcherMound(){
   const max=g.kbo.catcherMoundMax;
-  if(g.kbo.catcherMoundUsed>=max){
-    showToast('⚠️ 포수 마운드 방문 한도 초과! 포수 교체');
-    return;
-  }
+  if(g.kbo.catcherMoundUsed>=max){showToast('⚠️ 포수 마운드 방문 한도 초과! 포수 교체');return;}
   g.kbo.catcherMoundUsed++;
   if(g.kbo.catcherMoundUsed>=max) showToast('⚠️ 포수 마운드 방문 한도 도달 — 포수 교체!');
   else showToast(`포수 마운드 방문 ${g.kbo.catcherMoundUsed}/${max}회`);
   renderKboCounters(); save();
 }
-function resetCatcherMound(){ g.kbo.catcherMoundUsed=0; renderKboCounters(); save(); }
-function addCatcherMoundExtra(){
-  g.kbo.catcherMoundMax++;
-  showToast(`포수 방문 한도 → ${g.kbo.catcherMoundMax}회 (연장전 추가)`);
-  renderKboCounters(); save();
-}
+function resetCatcherMound(){g.kbo.catcherMoundUsed=0;renderKboCounters();save();}
+function addCatcherMoundExtra(){g.kbo.catcherMoundMax++;showToast(`포수 방문 한도 → ${g.kbo.catcherMoundMax}회 (연장전 추가)`);renderKboCounters();save();}
 
 function useBallChange(){
-  if(g.kbo.ballChangeUsed>=3){
-    showToast('⚠️ 볼 교체 한도 초과! (이닝당 3개)');
-    return;
-  }
+  if(g.kbo.ballChangeUsed>=3){showToast('⚠️ 볼 교체 한도 초과! (이닝당 3개)');return;}
   g.kbo.ballChangeUsed++;
   showToast(`볼 교체 ${g.kbo.ballChangeUsed}/3개`);
   renderKboCounters(); save();
 }
-function resetBallChange(){ g.kbo.ballChangeUsed=0; renderKboCounters(); save(); }
+function resetBallChange(){g.kbo.ballChangeUsed=0;renderKboCounters();save();}
 
 function renderKboCounters(){
   const k=g.kbo;
-  // 공격팀 타임
-  renderPips('offTimePips',k.offTimeUsed,2); renderPips('offTimePips2',k.offTimeUsed,2);
-  setCountVal('offTimeVal',k.offTimeUsed,2); setCountVal('offTimeVal2',k.offTimeUsed,2);
+  // 공격팀 타임 — 3회
+  renderPips('offTimePips',k.offTimeUsed,3); renderPips('offTimePips2',k.offTimeUsed,3);
+  setCountVal('offTimeVal',k.offTimeUsed,3); setCountVal('offTimeVal2',k.offTimeUsed,3);
   // 마운드 방문
   renderPips('moundVisitPips',k.moundVisitUsed,2); renderPips('moundVisitPips2',k.moundVisitUsed,2);
   setCountVal('moundVisitVal',k.moundVisitUsed,2); setCountVal('moundVisitVal2',k.moundVisitUsed,2);
@@ -687,88 +635,66 @@ function renderKboCounters(){
   renderPips('ballChangePips',k.ballChangeUsed,3);
   setCountVal('ballChangeVal',k.ballChangeUsed,3);
 }
-function renderPips(id, used, max){
+function renderPips(id,used,max){
   const el=document.getElementById(id); if(!el) return;
-  let html='';
-  for(let i=0;i<max;i++) html+=`<span class="${i<used?'used':''}"></span>`;
+  let html=''; for(let i=0;i<max;i++) html+=`<span class="${i<used?'used':''}"></span>`;
   el.innerHTML=html;
 }
-function setCountVal(id, used, max){
+function setCountVal(id,used,max){
   const el=document.getElementById(id); if(!el) return;
   el.textContent=used;
   el.className='kbo-count-val '+(used>=max?'kbo-over':used>=max-1&&max>1?'kbo-warn':'kbo-ok');
 }
 
-// ════════════════════════════════════════
-//  KBO 규정 — 타이머
-// ════════════════════════════════════════
-const TIMER_DEFS = {
-  mound:        { total:30,  warn:5,  valIds:['moundTimerVal','moundTimerVal2'],   btnIds:['moundTimerBtn','moundTimerBtn2'] },
-  inning:       { total:120, warn:20, valIds:['inningTimerVal','inningTimerVal2'],  btnIds:['inningTimerBtn','inningTimerBtn2'] },
-  pitchChanger: { total:140, warn:25, valIds:['pitchChangerTimerVal','pitchChangerTimerVal2'], btnIds:['pitchChangerTimerBtn','pitchChangerTimerBtn2'] },
-  pitch:        { total:12,  warn:3,  valIds:['pitchTimerVal','pitchTimerVal2'],    btnIds:['pitchTimerBtn','pitchTimerBtn2'] },
+// ════ 타이머 ════
+const TIMER_DEFS={
+  mound:       {total:30, warn:5, valIds:['moundTimerVal','moundTimerVal2'],  btnIds:['moundTimerBtn','moundTimerBtn2']},
+  inning:      {total:120,warn:20,valIds:['inningTimerVal','inningTimerVal2'],btnIds:['inningTimerBtn','inningTimerBtn2']},
+  pitchChanger:{total:140,warn:25,valIds:['pitchChangerTimerVal','pitchChangerTimerVal2'],btnIds:['pitchChangerTimerBtn','pitchChangerTimerBtn2']},
+  pitch:       {total:12, warn:3, valIds:['pitchTimerVal','pitchTimerVal2'],  btnIds:['pitchTimerBtn','pitchTimerBtn2']},
 };
-
-function fmtTime(s){
-  const m=Math.floor(s/60), sec=s%60;
-  return `${m}:${String(sec).padStart(2,'0')}`;
-}
-
+function fmtTime(s){const m=Math.floor(s/60),sec=s%60;return `${m}:${String(sec).padStart(2,'0')}`;}
 function updateTimerDisplay(key){
-  const t=timers[key], def=TIMER_DEFS[key];
-  const cls = t.remaining<=0?'over': t.remaining<=def.warn?'warn':'ok';
-  def.valIds.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){ el.textContent=fmtTime(t.remaining); el.className='kbo-timer-val '+cls; }
-  });
+  const t=timers[key],def=TIMER_DEFS[key];
+  const cls=t.remaining<=0?'over':t.remaining<=def.warn?'warn':'ok';
+  def.valIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=fmtTime(t.remaining);el.className='kbo-timer-val '+cls;}});
 }
-
 function toggleTimer(key){
-  const t=timers[key], def=TIMER_DEFS[key];
+  const t=timers[key],def=TIMER_DEFS[key];
   if(t.running){
-    clearInterval(t.interval); t.running=false;
+    clearInterval(t.interval);t.running=false;
     def.btnIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='▶ 시작';el.classList.remove('active-timer');}});
-  } else {
-    startTimer(key);
-  }
+  } else {startTimer(key);}
 }
-
 function startTimer(key){
-  const t=timers[key], def=TIMER_DEFS[key];
+  const t=timers[key],def=TIMER_DEFS[key];
   if(t.running) return;
-  t.remaining=def.total; t.running=true;
+  t.remaining=def.total;t.running=true;
   updateTimerDisplay(key);
   def.btnIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='⏹ 정지';el.classList.add('active-timer');}});
   t.interval=setInterval(()=>{
-    t.remaining--;
-    updateTimerDisplay(key);
+    t.remaining--;updateTimerDisplay(key);
     if(t.remaining<=0){
-      clearInterval(t.interval); t.running=false;
+      clearInterval(t.interval);t.running=false;
       def.btnIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='↺ 재시작';el.classList.remove('active-timer');}});
-      // 경고 알림
       const labels={mound:'마운드 방문 30초 초과!',inning:'이닝 교대 2분 초과!',pitchChanger:'투수교체 시간 초과!',pitch:'투구 간격 12초 초과!'};
       showToast('⚠️ '+labels[key]);
-    } else if(key==='mound' && t.remaining===5){
+    } else if(key==='mound'&&t.remaining===5){
       showToast('⏰ 마운드 방문 5초 남음 — 즉시 복귀 통보');
-    } else if(key==='inning' && t.remaining===25){
+    } else if(key==='inning'&&t.remaining===25){
       showToast('⏰ 이닝 교대 25초 남음 — 타자 타석 준비');
     }
   },1000);
 }
-
 function resetTimer(key){
-  const t=timers[key], def=TIMER_DEFS[key];
-  clearInterval(t.interval); t.running=false; t.remaining=def.total;
+  const t=timers[key],def=TIMER_DEFS[key];
+  clearInterval(t.interval);t.running=false;t.remaining=def.total;
   updateTimerDisplay(key);
   def.btnIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='▶ 시작';el.classList.remove('active-timer');}});
 }
 
-// ════════════════════════════════════════
-//  ROSTER
-// ════════════════════════════════════════
-function mkPlayer(num,name,pos){
-  return{id:g._pid++,num,name,pos,status:'active'};
-}
+// ════ ROSTER ════
+function mkPlayer(num,name,pos){return{id:g._pid++,num,name,pos,status:'active'};}
 function initRosters(){
   const pos=['투수','포수','1루수','2루수','3루수','유격수','좌익수','중견수','우익수','지명타자'];
   for(let i=0;i<10;i++){
@@ -776,18 +702,24 @@ function initRosters(){
     g.rosters.B.push(mkPlayer(i+1,'선수'+(i+1),pos[i]));
   }
 }
-function activePlayers(team){ return g.rosters[team].filter(p=>p.status!=='out'); }
-function getTeamName(t){ return t==='A'?document.getElementById('teamA').value||'홈팀':document.getElementById('teamB').value||'원정팀'; }
-function battingTeam(){ return g.half==='top'?'B':'A'; }
-function pitchingTeam(){ return g.half==='top'?'A':'B'; }
-function scoringTeam(){ return battingTeam(); }
+function activePlayers(team){return g.rosters[team].filter(p=>p.status!=='out');}
+
+// ★ 타자 가능 선수: 투수 포지션 제외 (DH 규정)
+function batterablePlayers(team){
+  return g.rosters[team].filter(p=>p.status!=='out' && p.pos!=='투수');
+}
+
+function getTeamName(t){return t==='A'?document.getElementById('teamA').value||'홈팀':document.getElementById('teamB').value||'원정팀';}
+function battingTeam(){return g.half==='top'?'B':'A';}
+function pitchingTeam(){return g.half==='top'?'A':'B';}
+function scoringTeam(){return battingTeam();}
 
 function renderRoster(team){
   const el=document.getElementById('panel-roster'+team);
   const tname=getTeamName(team);
   const players=g.rosters[team];
   let html=`<div class="sec-title">선수 등록 — ${tname}</div>
-  <div style="font-size:11px;color:#1d9e75;margin-bottom:6px">✅ 선수 정보는 자동으로 로컬 저장됩니다</div>
+  <div style="font-size:11px;color:#1d9e75;margin-bottom:6px">✅ 선수 정보는 자동으로 로컬 저장됩니다 &nbsp;|&nbsp; 🚫 투수는 타자 목록에 표시되지 않습니다</div>
   <div class="card"><div class="row" style="margin-bottom:0">
     <input type="number" id="newNum${team}" placeholder="번호" style="width:65px" min="1" max="99"/>
     <input type="text" id="newName${team}" placeholder="선수명" style="flex:1"/>
@@ -801,13 +733,14 @@ function renderRoster(team){
     const i=idx%8;
     const posOpts=POSITIONS.map(pos=>`<option${pos===p.pos?' selected':''}>${pos}</option>`).join('');
     const statBadge={active:'<span class="badge b-active">출전중</span>',bench:'<span class="badge b-bench">벤치</span>',ph:'<span class="badge b-ph">대타</span>',pr:'<span class="badge b-pr">대주자</span>',def:'<span class="badge b-def">수비교체</span>',out:'<span class="badge b-out">교체아웃</span>'}[p.status]||'';
+    const pitcherNote=p.pos==='투수'?'<span style="font-size:10px;color:#aaa;margin-left:2px">타석불가</span>':'';
     html+=`<div class="player-row">
       <div class="avatar" style="background:${AV_BG[i]};color:${AV_TX[i]}">${p.name.slice(0,2)}</div>
       <span class="num-tag">#${p.num}</span>
       <input type="text" value="${p.name}" style="flex:1;border:none;border-bottom:1px solid #eee;background:transparent;color:#1a1a1a;font-family:inherit;font-size:13px;padding:2px 0"
         onchange="updatePlayerName('${team}',${p.id},this.value)"/>
       <select class="pos-sel" onchange="updatePlayerPos('${team}',${p.id},this.value)">${posOpts}</select>
-      ${statBadge}
+      ${statBadge}${pitcherNote}
       <button class="btn" style="padding:3px 8px;font-size:11px" onclick="toggleBench('${team}',${p.id})">${p.status==='bench'?'복귀':'벤치'}</button>
       <button class="btn danger" style="padding:3px 8px;font-size:11px" onclick="removePlayer('${team}',${p.id})"><i class="ti ti-trash"></i></button>
     </div>`;
@@ -826,32 +759,32 @@ function addPlayer(team){
   g.rosters[team].push(mkPlayer(num,name,pos));
   document.getElementById('newNum'+team).value='';
   document.getElementById('newName'+team).value='';
-  renderRoster(team); updateSelects(); save();
+  renderRoster(team);updateSelects();save();
 }
 function removePlayer(team,id){
   if(!confirm('삭제하시겠습니까?')) return;
   g.rosters[team]=g.rosters[team].filter(p=>p.id!==id);
-  renderRoster(team); updateSelects(); save();
+  renderRoster(team);updateSelects();save();
 }
 function updatePlayerName(team,id,val){
   const p=g.rosters[team].find(x=>x.id===id);
   if(p&&val.trim()) p.name=val.trim();
-  updateSelects(); save();
+  updateSelects();save();
 }
 function updatePlayerPos(team,id,val){
   const p=g.rosters[team].find(x=>x.id===id);
-  if(p) p.pos=val; save();
+  if(p) p.pos=val;
+  updateSelects();save();
 }
 function toggleBench(team,id){
   const p=g.rosters[team].find(x=>x.id===id);
   if(!p||p.status==='out') return;
   p.status=p.status==='bench'?'active':'bench';
-  renderRoster(team); save();
+  renderRoster(team);save();
 }
 function clearRoster(team){
   if(!confirm(`${getTeamName(team)} 명단을 초기화할까요?`)) return;
-  g.rosters[team]=[];
-  renderRoster(team); updateSelects(); save();
+  g.rosters[team]=[];renderRoster(team);updateSelects();save();
 }
 function exportRoster(team){
   const tname=getTeamName(team);
@@ -860,350 +793,229 @@ function exportRoster(team){
   navigator.clipboard.writeText(txt).then(()=>showToast('명단 복사 완료')).catch(()=>alert(txt));
 }
 
-// ════════════════════════════════════════
-//  SELECTS (타자/투수 드롭다운)
-// ════════════════════════════════════════
+// ════ SELECTS ════
 function updateSelects(){
-  const bt=battingTeam(), pt=pitchingTeam();
+  const bt=battingTeam(),pt=pitchingTeam();
   const bs=document.getElementById('curBatterSel');
   const ps=document.getElementById('curPitcherSel');
   if(!bs||!ps) return;
-  const bPlayers=activePlayers(bt);
+  // ★ 타자 목록: 투수 포지션 제외
+  const bPlayers=batterablePlayers(bt);
   const pPlayers=g.rosters[pt].filter(p=>p.pos==='투수'&&p.status!=='out');
   bs.innerHTML='<option value="">-- 선택 --</option>'+bPlayers.map(p=>`<option value="${p.id}">#${p.num} ${p.name} (${p.pos})</option>`).join('');
   ps.innerHTML='<option value="">-- 선택 --</option>'+pPlayers.map(p=>`<option value="${p.id}">#${p.num} ${p.name}</option>`).join('');
   if(g.curBatter) bs.value=String(g.curBatter);
-  if(!bs.value && bPlayers.length){ g.curBatter=String(bPlayers[0].id); bs.value=g.curBatter; }
+  if(!bs.value&&bPlayers.length){g.curBatter=String(bPlayers[0].id);bs.value=g.curBatter;}
   if(g.curPitcher) ps.value=String(g.curPitcher);
 }
 
-// ════════════════════════════════════════
-//  NEXT BATTER
-// ════════════════════════════════════════
+// ════ NEXT BATTER ════
 function advanceBatter(msg){
   const bt=battingTeam();
-  const active=activePlayers(bt);
-  g.balls=0; g.strikes=0;
+  // ★ 다음 타자도 투수 제외
+  const active=batterablePlayers(bt);
+  g.balls=0;g.strikes=0;
   if(active.length>0){
     const cur=active.findIndex(p=>String(p.id)===String(g.curBatter));
     const next=(cur+1)%active.length;
     g.curBatter=String(active[next].id);
   }
-  renderGame(); save();
-  const next=activePlayers(bt).find(p=>String(p.id)===String(g.curBatter));
+  renderGame();save();
+  const next=batterablePlayers(bt).find(p=>String(p.id)===String(g.curBatter));
   if(msg) showToast(msg+(next?` → #${next.num} ${next.name}`:''));
 }
-function nextBatter(){ advanceBatter('다음 타자'); }
+function nextBatter(){advanceBatter('다음 타자');}
 
-// ════════════════════════════════════════
-//  COUNT
-// ════════════════════════════════════════
-function addBall(){
-  g.balls++;
-  if(g.balls>=4){ doPlay('bb'); return; }
-  renderGame(); save();
-}
-function addStrike(){
-  g.strikes++;
-  if(g.strikes>=3){ doPlay('k'); return; }
-  renderGame(); save();
-}
-function addFoul(){
-  if(g.strikes<2){ g.strikes++; }
-  renderGame(); save();
-}
+// ════ COUNT ════
+function addBall(){g.balls++;if(g.balls>=4){doPlay('bb');return;}renderGame();save();}
+function addStrike(){g.strikes++;if(g.strikes>=3){doPlay('k');return;}renderGame();save();}
+function addFoul(){if(g.strikes<2){g.strikes++;}renderGame();save();}
 function addOut(n){
   const cnt=n||1;
-  for(let i=0;i<cnt;i++){
-    g.outs++;
-    if(g.outs>=3){ handle3Out(); return; }
-  }
-  g.balls=0; g.strikes=0;
-  renderGame(); save();
+  for(let i=0;i<cnt;i++){g.outs++;if(g.outs>=3){handle3Out();return;}}
+  g.balls=0;g.strikes=0;renderGame();save();
 }
-function handle3Out(){
-  g.balls=0; g.strikes=0;
-  showToast('3아웃! 이닝 전환');
-  save(); setTimeout(nextInning,700);
-}
-function resetCount(){ g.balls=0; g.strikes=0; renderGame(); save(); }
+function handle3Out(){g.balls=0;g.strikes=0;showToast('3아웃! 이닝 전환');save();setTimeout(nextInning,700);}
+function resetCount(){g.balls=0;g.strikes=0;renderGame();save();}
+function addScore(n){const t=scoringTeam();if(t==='A')g.scoreA+=n;else g.scoreB+=n;}
 
-// ════════════════════════════════════════
-//  SCORE
-// ════════════════════════════════════════
-function addScore(n){
-  const t=scoringTeam();
-  if(t==='A') g.scoreA+=n; else g.scoreB+=n;
-}
-
-// ════════════════════════════════════════
-//  PLAY ENGINE
-// ════════════════════════════════════════
-function runnerCount(){ return [1,2,3].filter(b=>g.bases[b]).length; }
-function hasRunner(b){ return g.bases[b]; }
-
+// ════ PLAY ENGINE ════
 function doPlay(action){
-  const acts = {
-    'single':    ()=>hitModal('안타','hit',1),
-    'double':    ()=>hitModal('2루타','hit',2),
-    'triple':    ()=>hitModal('3루타','hit',3),
-    'hr':        ()=>doHR(),
-    'bb':        ()=>doWalk('볼넷'),
-    'hbp':       ()=>doWalk('몸에 맞는 공'),
-    'pi':        ()=>doWalk('투수 방해'),
-    'fc':        ()=>hitModal('야수선택','hit',1,true),
-    'e':         ()=>hitModal('실책(E)','hit',1,true),
-    'k':         ()=>doStrikeout(false),
-    'k_looking': ()=>doStrikeout(false),
-    'go':        ()=>outModal('땅볼 아웃','out',1,true),
-    'fo':        ()=>outModal('플라이 아웃','out',1,false),
-    'lo':        ()=>outModal('라인드라이브 아웃','out',1,false),
-    'sac_fly':   ()=>outModal('희생플라이','out',1,true,true),
-    'sac_bunt':  ()=>outModal('희생번트','out',1,true),
+  const acts={
+    'single':()=>hitModal('안타','hit',1),
+    'double':()=>hitModal('2루타','hit',2),
+    'triple':()=>hitModal('3루타','hit',3),
+    'hr':()=>doHR(),
+    'bb':()=>doWalk('볼넷'),
+    'hbp':()=>doWalk('몸에 맞는 공'),
+    'pi':()=>doWalk('투수 방해'),
+    'fc':()=>hitModal('야수선택','hit',1,true),
+    'e':()=>hitModal('실책(E)','hit',1,true),
+    'k':()=>doStrikeout(false),
+    'k_looking':()=>doStrikeout(false),
+    'go':()=>outModal('땅볼 아웃','out',1,true),
+    'fo':()=>outModal('플라이 아웃','out',1,false),
+    'lo':()=>outModal('라인드라이브 아웃','out',1,false),
+    'sac_fly':()=>outModal('희생플라이','out',1,true,true),
+    'sac_bunt':()=>outModal('희생번트','out',1,true),
     'interference':()=>outModal('수비방해/주루방해','out',1,true),
-    'dp':        ()=>outModal('병살(DP)','out',2,true),
-    'tp':        ()=>outModal('삼중살(TP)','out',3,true),
-    'sb':        ()=>stolenBaseModal(false),
-    'cs':        ()=>stolenBaseModal(true),
-    'pick_off':  ()=>stolenBaseModal(true,'견제 아웃'),
-    'run_down':  ()=>stolenBaseModal(true,'런다운 아웃'),
-    'wp':        ()=>advanceModal('폭투(WP)'),
-    'pb':        ()=>advanceModal('패스볼(PB)'),
-    'bk':        ()=>advanceModal('보크(BK)'),
-    'dr':        ()=>{ logPlay('타임','ball'); renderGame(); save(); },
+    'dp':()=>outModal('병살(DP)','out',2,true),
+    'tp':()=>outModal('삼중살(TP)','out',3,true),
+    'sb':()=>stolenBaseModal(false),
+    'cs':()=>stolenBaseModal(true),
+    'pick_off':()=>stolenBaseModal(true,'견제 아웃'),
+    'run_down':()=>stolenBaseModal(true,'런다운 아웃'),
+    'wp':()=>advanceModal('폭투(WP)'),
+    'pb':()=>advanceModal('패스볼(PB)'),
+    'bk':()=>advanceModal('보크(BK)'),
+    'dr':()=>{logPlay('타임','ball');renderGame();save();},
   };
   if(acts[action]) acts[action]();
-  else { logPlay(action,'ball'); renderGame(); save(); }
+  else{logPlay(action,'ball');renderGame();save();}
 }
-
 function doHR(){
   let scored=0;
-  [1,2,3].forEach(b=>{ if(g.bases[b]){ scored++; g.bases[b]=false; } });
-  scored++;
-  g.bases=[false,false,false,false];
-  addScore(scored);
-  logPlay(`홈런 💥 (${scored}점)`,'hr');
-  showToast(`홈런! ${scored}점 득점! 💥`);
-  advanceBatter('');
+  [1,2,3].forEach(b=>{if(g.bases[b]){scored++;g.bases[b]=false;}});
+  scored++;g.bases=[false,false,false,false];
+  addScore(scored);logPlay(`홈런 💥 (${scored}점)`,'hr');
+  showToast(`홈런! ${scored}점 득점! 💥`);advanceBatter('');
 }
-
 function doWalk(label){
   let scored=0;
-  if(g.bases[1]&&g.bases[2]&&g.bases[3]){ scored=1; g.bases[3]=false; }
+  if(g.bases[1]&&g.bases[2]&&g.bases[3]){scored=1;g.bases[3]=false;}
   if(g.bases[2]&&g.bases[1]) g.bases[3]=true;
   if(g.bases[1]) g.bases[2]=true;
   g.bases[1]=true;
-  if(scored){ addScore(scored); showToast(`밀어내기 ${scored}점!`); }
-  logPlay(label+(scored?` (밀어내기 ${scored}점)`:' 🚶'),'ball');
-  advanceBatter('');
+  if(scored){addScore(scored);showToast(`밀어내기 ${scored}점!`);}
+  logPlay(label+(scored?` (밀어내기 ${scored}점)`:' 🚶'),'ball');advanceBatter('');
 }
-
-function doStrikeout(swinging){
-  logPlay('삼진 K','out');
-  g.strikes=0;
-  addOut(1);
-  if(g.outs<3) advanceBatter('삼진');
+function doStrikeout(){
+  logPlay('삼진 K','out');g.strikes=0;addOut(1);if(g.outs<3) advanceBatter('삼진');
 }
-
-function hitModal(label, type, defaultAdv, allowNoAdvance){
+function hitModal(label,type,defaultAdv,allowNoAdvance){
   const runners=[{base:0,label:'타자(홈 → '+defaultAdv+'루)'}];
-  [1,2,3].forEach(b=>{ if(g.bases[b]) runners.push({base:b,label:b+'루 주자'}); });
-  const html=`
-    <div class="modal-title">${label} — 주자 이동 선택</div>
+  [1,2,3].forEach(b=>{if(g.bases[b]) runners.push({base:b,label:b+'루 주자'});});
+  const html=`<div class="modal-title">${label} — 주자 이동 선택</div>
     <div class="modal-sub">각 주자가 어느 베이스로 갈지 선택하세요</div>
-    <div class="modal-section">
-      ${runners.map(r=>{
-        const opts=[1,2,3].map(dest=>{
-          const suggested = r.base===0 ? defaultAdv : Math.min(r.base+defaultAdv,3);
-          return `<option value="${dest}" ${dest===suggested?'selected':''}>${dest}루</option>`;
-        }).join('');
-        const homeOpt = `<option value="4" ${r.base+defaultAdv>=4?'selected':''}>홈(득점)</option>`;
-        const skipOpt = allowNoAdvance ? `<option value="0">이동 안함</option>` : '';
-        return `<div class="runner-row">
-          <span style="flex:1">${r.label}</span>
-          <select class="dest-sel" data-base="${r.base}">${skipOpt}${opts}${homeOpt}</select>
-        </div>`;
-      }).join('')}
-    </div>`;
-  showModal(html, ()=>{
-    let scored=0;
-    const newBases=[false,false,false,false];
+    <div class="modal-section">${runners.map(r=>{
+      const opts=[1,2,3].map(dest=>{const suggested=r.base===0?defaultAdv:Math.min(r.base+defaultAdv,3);return `<option value="${dest}" ${dest===suggested?'selected':''}>${dest}루</option>`;}).join('');
+      const homeOpt=`<option value="4" ${r.base+defaultAdv>=4?'selected':''}>홈(득점)</option>`;
+      const skipOpt=allowNoAdvance?`<option value="0">이동 안함</option>`:'';
+      return `<div class="runner-row"><span style="flex:1">${r.label}</span><select class="dest-sel" data-base="${r.base}">${skipOpt}${opts}${homeOpt}</select></div>`;
+    }).join('')}</div>`;
+  showModal(html,()=>{
+    let scored=0;const newBases=[false,false,false,false];
     document.querySelectorAll('#modalBox .dest-sel').forEach(sel=>{
-      const from=parseInt(sel.dataset.base);
-      const to=parseInt(sel.value);
-      if(to===0) { if(from>0) newBases[from]=true; }
-      else if(to>=4){ scored++; }
-      else { newBases[to]=true; }
+      const from=parseInt(sel.dataset.base),to=parseInt(sel.value);
+      if(to===0){if(from>0)newBases[from]=true;}
+      else if(to>=4){scored++;}else{newBases[to]=true;}
     });
-    g.bases=newBases;
-    if(scored){ addScore(scored); }
-    logPlay(label+(scored?` (${scored}점)`:''),(scored||type==='hit')?type:type);
-    if(scored) showToast(`${scored}점 득점!`);
-    advanceBatter('');
+    g.bases=newBases;if(scored)addScore(scored);
+    logPlay(label+(scored?` (${scored}점)`:''),type);
+    if(scored)showToast(`${scored}점 득점!`);advanceBatter('');
   });
 }
-
-function outModal(label, type, numOuts, allowAdvance, isSacFly){
+function outModal(label,type,numOuts,allowAdvance,isSacFly){
   const runners=[1,2,3].filter(b=>g.bases[b]).map(b=>({base:b,label:b+'루 주자'}));
-  const batHtml = numOuts>0 && !isSacFly
-    ? `<div class="runner-row"><span style="flex:1">타자 → 아웃</span><span class="badge b-out">아웃</span></div>`
-    : '';
+  const batHtml=numOuts>0&&!isSacFly?`<div class="runner-row"><span style="flex:1">타자 → 아웃</span><span class="badge b-out">아웃</span></div>`:'';
   let runnerHtml='';
-  if(allowAdvance && runners.length){
+  if(allowAdvance&&runners.length){
     runnerHtml=`<div class="modal-section-label">주자 이동 (선택)</div>`+
       runners.map(r=>{
         const opts=[1,2,3].filter(d=>d>r.base).map(d=>`<option value="${d}">${d}루</option>`).join('');
-        return `<div class="runner-row">
-          <input type="checkbox" data-base="${r.base}" id="rc${r.base}" ${isSacFly&&r.base===3?'checked':''}>
+        return `<div class="runner-row"><input type="checkbox" data-base="${r.base}" id="rc${r.base}" ${isSacFly&&r.base===3?'checked':''}>
           <label for="rc${r.base}" style="flex:1;cursor:pointer">${r.label} 진루/득점</label>
-          <select class="dest-sel" data-base="${r.base}">${opts}<option value="4" ${r.base===3?'selected':''}>홈(득점)</option></select>
-        </div>`;
+          <select class="dest-sel" data-base="${r.base}">${opts}<option value="4" ${r.base===3?'selected':''}>홈(득점)</option></select></div>`;
       }).join('');
   }
-  const extraOutHtml = runners.length&&numOuts>1
-    ? `<div class="modal-section-label" style="margin-top:10px">추가 아웃 주자 선택</div>`+
-      runners.map(r=>`<div class="runner-row">
-        <input type="checkbox" data-extraout="${r.base}">
-        <span style="flex:1">${r.base}루 주자 아웃</span>
-      </div>`).join('')
-    : '';
-  const html=`
-    <div class="modal-title">${label}</div>
-    <div class="modal-sub">아웃 처리 및 주자 이동을 확인하세요</div>
-    <div class="modal-section">${batHtml}${runnerHtml}${extraOutHtml}</div>`;
-  showModal(html, ()=>{
-    let scored=0;
-    const newBases=[...g.bases];
+  const extraOutHtml=runners.length&&numOuts>1?`<div class="modal-section-label" style="margin-top:10px">추가 아웃 주자 선택</div>`+
+    runners.map(r=>`<div class="runner-row"><input type="checkbox" data-extraout="${r.base}"><span style="flex:1">${r.base}루 주자 아웃</span></div>`).join(''):'';
+  showModal(`<div class="modal-title">${label}</div><div class="modal-sub">아웃 처리 및 주자 이동을 확인하세요</div><div class="modal-section">${batHtml}${runnerHtml}${extraOutHtml}</div>`,()=>{
+    let scored=0;const newBases=[...g.bases];
     document.querySelectorAll('#modalBox input[data-base]:checked').forEach(cb=>{
       const from=parseInt(cb.dataset.base);
       const sel=document.querySelector(`#modalBox .dest-sel[data-base="${from}"]`);
       const to=sel?parseInt(sel.value):from+1;
-      newBases[from]=false;
-      if(to>=4) scored++;
-      else newBases[to]=true;
+      newBases[from]=false;if(to>=4)scored++;else newBases[to]=true;
     });
     let extraOuts=0;
-    document.querySelectorAll('#modalBox input[data-extraout]:checked').forEach(cb=>{
-      const b=parseInt(cb.dataset.extraout);
-      newBases[b]=false; extraOuts++;
-    });
+    document.querySelectorAll('#modalBox input[data-extraout]:checked').forEach(cb=>{newBases[parseInt(cb.dataset.extraout)]=false;extraOuts++;});
     if(!isSacFly) newBases[0]=false;
-    g.bases=newBases;
-    if(scored){ addScore(scored); }
-    const totalOuts=numOuts+extraOuts;
+    g.bases=newBases;if(scored)addScore(scored);
     logPlay(label+(scored?` (${scored}점)`:''),(scored?'hit':type));
-    if(scored) showToast(`${scored}점 득점!`);
-    addOut(totalOuts);
-    if(g.outs<3) advanceBatter('');
+    if(scored)showToast(`${scored}점 득점!`);
+    addOut(numOuts+extraOuts);if(g.outs<3)advanceBatter('');
   });
 }
-
-function stolenBaseModal(isOut, customLabel){
+function stolenBaseModal(isOut,customLabel){
   const runners=[1,2,3].filter(b=>g.bases[b]).map(b=>({base:b,label:b+'루 주자'}));
-  if(!runners.length){ showToast('베이스에 주자가 없습니다'); return; }
+  if(!runners.length){showToast('베이스에 주자가 없습니다');return;}
   const label=customLabel||(isOut?'도루실패(CS)':'도루(SB)');
-  const html=`
-    <div class="modal-title">${label}</div>
-    <div class="modal-sub">주자를 선택하고 목적 베이스를 지정하세요</div>
-    <div class="modal-section">
-      ${runners.map(r=>{
-        const nextBase=r.base+1;
-        const opts=[2,3].filter(d=>d>r.base).map(d=>`<option value="${d}" ${d===nextBase?'selected':''}>${d}루</option>`).join('');
-        const homeOpt=`<option value="4" ${nextBase>=4?'selected':''}>홈(득점)</option>`;
-        return `<div class="runner-row">
-          <input type="radio" name="sbRunner" value="${r.base}" ${runners.length===1?'checked':''} style="width:16px;height:16px">
-          <span style="flex:1">${r.label}</span>
-          <select class="dest-sel" data-base="${r.base}">${opts}${homeOpt}</select>
-        </div>`;
-      }).join('')}
-    </div>`;
-  showModal(html, ()=>{
+  const html=`<div class="modal-title">${label}</div><div class="modal-sub">주자를 선택하고 목적 베이스를 지정하세요</div>
+    <div class="modal-section">${runners.map(r=>{
+      const nb=r.base+1;
+      const opts=[2,3].filter(d=>d>r.base).map(d=>`<option value="${d}" ${d===nb?'selected':''}>${d}루</option>`).join('');
+      return `<div class="runner-row"><input type="radio" name="sbRunner" value="${r.base}" ${runners.length===1?'checked':''} style="width:16px;height:16px">
+        <span style="flex:1">${r.label}</span>
+        <select class="dest-sel" data-base="${r.base}">${opts}<option value="4" ${nb>=4?'selected':''}>홈(득점)</option></select></div>`;
+    }).join('')}</div>`;
+  showModal(html,()=>{
     const sel=document.querySelector('#modalBox input[name=sbRunner]:checked');
-    if(!sel){ showToast('주자를 선택하세요'); return; }
+    if(!sel){showToast('주자를 선택하세요');return;}
     const from=parseInt(sel.value);
     const destEl=document.querySelector(`#modalBox .dest-sel[data-base="${from}"]`);
     const to=destEl?parseInt(destEl.value):from+1;
     if(isOut){
       g.bases[from]=false;
       logPlay(label+` (${from}루→${to>=4?'홈':to+'루'} 실패)`,'out');
-      showToast(`${label}: ${from}루 주자 아웃`);
-      addOut(1);
+      showToast(`${label}: ${from}루 주자 아웃`);addOut(1);
     } else {
       g.bases[from]=false;
-      if(to>=4){ addScore(1); showToast(`도루 홈인! 1점 득점!`); }
-      else { g.bases[to]=true; showToast(`도루 성공: ${from}루→${to}루`); }
+      if(to>=4){addScore(1);showToast(`도루 홈인! 1점 득점!`);}
+      else{g.bases[to]=true;showToast(`도루 성공: ${from}루→${to}루`);}
       logPlay(`도루(${from}루→${to>=4?'홈':to+'루'})`,'hit');
-      renderGame(); save();
+      renderGame();save();
     }
   });
 }
-
 function advanceModal(label){
   const runners=[1,2,3].filter(b=>g.bases[b]).map(b=>({base:b,label:b+'루 주자'}));
-  if(!runners.length){ logPlay(label+' (주자 없음)','ball'); renderGame(); save(); return; }
-  const html=`
-    <div class="modal-title">${label} — 진루 선택</div>
-    <div class="modal-sub">진루할 주자와 목적 베이스를 선택하세요</div>
-    <div class="modal-section">
-      ${runners.map(r=>{
-        const nextBase=r.base+1;
-        const opts=[2,3].filter(d=>d>r.base).map(d=>`<option value="${d}" ${d===nextBase?'selected':''}>${d}루</option>`).join('');
-        const homeOpt=`<option value="4" ${nextBase>=4?'selected':''}>홈(득점)</option>`;
-        return `<div class="runner-row">
-          <input type="checkbox" data-base="${r.base}" checked style="width:16px;height:16px;flex-shrink:0">
-          <span style="flex:1">${r.label}</span>
-          <select class="dest-sel" data-base="${r.base}">${opts}${homeOpt}</select>
-        </div>`;
-      }).join('')}
-    </div>`;
-  showModal(html, ()=>{
-    let scored=0;
-    const newBases=[...g.bases];
+  if(!runners.length){logPlay(label+' (주자 없음)','ball');renderGame();save();return;}
+  const html=`<div class="modal-title">${label} — 진루 선택</div><div class="modal-sub">진루할 주자와 목적 베이스를 선택하세요</div>
+    <div class="modal-section">${runners.map(r=>{
+      const nb=r.base+1;
+      const opts=[2,3].filter(d=>d>r.base).map(d=>`<option value="${d}" ${d===nb?'selected':''}>${d}루</option>`).join('');
+      return `<div class="runner-row"><input type="checkbox" data-base="${r.base}" checked style="width:16px;height:16px;flex-shrink:0">
+        <span style="flex:1">${r.label}</span>
+        <select class="dest-sel" data-base="${r.base}">${opts}<option value="4" ${nb>=4?'selected':''}>홈(득점)</option></select></div>`;
+    }).join('')}</div>`;
+  showModal(html,()=>{
+    let scored=0;const newBases=[...g.bases];
     document.querySelectorAll('#modalBox input[data-base]').forEach(cb=>{
       const from=parseInt(cb.dataset.base);
       const destEl=document.querySelector(`#modalBox .dest-sel[data-base="${from}"]`);
       const to=destEl?parseInt(destEl.value):from+1;
-      if(cb.checked){
-        newBases[from]=false;
-        if(to>=4) scored++;
-        else newBases[to]=true;
-      }
+      if(cb.checked){newBases[from]=false;if(to>=4)scored++;else newBases[to]=true;}
     });
     g.bases=newBases;
-    if(scored){ addScore(scored); showToast(`${scored}점 득점! (${label})`); }
-    else showToast(`${label} — 주자 진루`);
-    logPlay(label+(scored?` (${scored}점)`:''),(scored?'hit':'ball'));
-    renderGame(); save();
+    if(scored){addScore(scored);showToast(`${scored}점 득점! (${label})`);}else showToast(`${label} — 주자 진루`);
+    logPlay(label+(scored?` (${scored}점)`:''),(scored?'hit':'ball'));renderGame();save();
   });
 }
-
-function showModal(bodyHtml, onApply){
-  const overlay=document.createElement('div');
-  overlay.className='modal-overlay';
-  overlay.id='modalOverlay';
-  const box=document.createElement('div');
-  box.className='modal-box'; box.id='modalBox';
-  box.innerHTML=bodyHtml+`
-    <div class="modal-btn-row">
-      <button class="modal-cancel" onclick="closeModal()">취소</button>
-      <button class="modal-apply" id="modalApplyBtn">적용</button>
-    </div>`;
+function showModal(bodyHtml,onApply){
+  const overlay=document.createElement('div');overlay.className='modal-overlay';overlay.id='modalOverlay';
+  const box=document.createElement('div');box.className='modal-box';box.id='modalBox';
+  box.innerHTML=bodyHtml+`<div class="modal-btn-row"><button class="modal-cancel" onclick="closeModal()">취소</button><button class="modal-apply" id="modalApplyBtn">적용</button></div>`;
   overlay.appendChild(box);
-  overlay.addEventListener('click',e=>{ if(e.target===overlay) closeModal(); });
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
   document.body.appendChild(overlay);
-  document.getElementById('modalApplyBtn').onclick=()=>{ closeModal(); onApply(); };
+  document.getElementById('modalApplyBtn').onclick=()=>{closeModal();onApply();};
 }
-function closeModal(){ const el=document.getElementById('modalOverlay'); if(el) el.remove(); }
+function closeModal(){const el=document.getElementById('modalOverlay');if(el)el.remove();}
+function logPlay(label,type){g.playLog.push({label,type,inning:g.inning,half:g.half});renderPitchLog();save();}
+function undoPlay(){if(g.playLog.length){g.playLog.pop();renderPitchLog();save();}}
 
-function logPlay(label,type){
-  g.playLog.push({label,type,inning:g.inning,half:g.half});
-  renderPitchLog(); save();
-}
-function undoPlay(){ if(g.playLog.length){ g.playLog.pop(); renderPitchLog(); save(); } }
-
-// ════════════════════════════════════════
-//  RENDER
-// ════════════════════════════════════════
+// ════ RENDER ════
 function renderGame(){
   document.getElementById('scA').textContent=g.scoreA;
   document.getElementById('scB').textContent=g.scoreB;
@@ -1219,22 +1031,19 @@ function renderGame(){
   document.getElementById('ballN').textContent=g.balls;
   document.getElementById('strikeN').textContent=g.strikes;
   document.getElementById('outN').textContent=g.outs;
-  renderOutCircles(); renderBases(); renderStatus(); renderScoreboard(); renderPitchLog();
-  renderKboCounters();
-  updateSelects();
+  renderOutCircles();renderBases();renderStatus();renderScoreboard();renderPitchLog();renderKboCounters();updateSelects();
 }
 function renderDots(id,val,max,type){
-  const el=document.getElementById(id); el.innerHTML='';
+  const el=document.getElementById(id);el.innerHTML='';
   for(let i=0;i<max;i++){const d=document.createElement('div');d.className='dot'+(i<val?' '+type+'-on':'');el.appendChild(d);}
 }
 function renderOutCircles(){
-  const el=document.getElementById('outCircles'); el.innerHTML='';
+  const el=document.getElementById('outCircles');el.innerHTML='';
   for(let i=0;i<3;i++){const c=document.createElement('div');c.className='out-circle'+(i<g.outs?' filled':'');el.appendChild(c);}
 }
 function renderBases(){
   [['bH',0],['b1',1],['b2',2],['b3',3]].forEach(([id,i])=>{
-    const el=document.getElementById(id);
-    if(el) el.className.baseVal='base-'+(g.bases[i]?'on':'empty');
+    const el=document.getElementById(id);if(el)el.className.baseVal='base-'+(g.bases[i]?'on':'empty');
   });
 }
 function renderStatus(){
@@ -1252,7 +1061,7 @@ function renderScoreboard(){
   for(let i=1;i<=max;i++) th+=`<th style="width:22px">${i}</th>`;
   th+='<th style="width:26px">R</th></tr>';
   document.getElementById('sbHead').innerHTML=th;
-  const tA=getTeamName('A'), tB=getTeamName('B');
+  const tA=getTeamName('A'),tB=getTeamName('B');
   let rA=`<tr><td style="text-align:left;font-weight:600;font-size:12px">${tA}</td>`;
   let rB=`<tr><td style="text-align:left;font-weight:600;font-size:12px">${tB}</td>`;
   for(let i=1;i<=max;i++){
@@ -1270,34 +1079,25 @@ function renderPitchLog(){
   el.scrollLeft=el.scrollWidth;
 }
 
-// ════════════════════════════════════════
-//  INNING
-// ════════════════════════════════════════
+// ════ INNING ════
 function toggleHalf(){
-  // 이닝 교대 시 공격팀 타임·볼 교체 초기화 (이닝당 규정)
-  g.kbo.offTimeUsed=0;
-  g.kbo.ballChangeUsed=0;
+  g.kbo.offTimeUsed=0;g.kbo.ballChangeUsed=0;
   if(g.half==='top') g.half='bot';
-  else { g.half='top'; g.inning=Math.min(g.inning+1,20); }
-  g.balls=0; g.strikes=0; g.outs=0; g.playLog=[]; g.bases=[false,false,false,false];
-  // 이닝 교대 타이머 자동 시작
-  startTimer('inning');
-  renderGame(); save();
+  else{g.half='top';g.inning=Math.min(g.inning+1,20);}
+  g.balls=0;g.strikes=0;g.outs=0;g.playLog=[];g.bases=[false,false,false,false];
+  startTimer('inning');renderGame();save();
   showToast(`${g.inning}회 ${g.half==='top'?'초':'말'} 시작`);
 }
-function nextInning(){ toggleHalf(); }
+function nextInning(){toggleHalf();}
 function chInning(d){
   g.inning=Math.max(1,Math.min(20,g.inning+d));
-  g.balls=0; g.strikes=0; g.outs=0; g.playLog=[]; g.bases=[false,false,false,false];
-  g.kbo.offTimeUsed=0; g.kbo.ballChangeUsed=0;
-  renderGame(); save();
+  g.balls=0;g.strikes=0;g.outs=0;g.playLog=[];g.bases=[false,false,false,false];
+  g.kbo.offTimeUsed=0;g.kbo.ballChangeUsed=0;renderGame();save();
 }
-function chScore(t,d){ if(t==='A') g.scoreA=Math.max(0,g.scoreA+d); else g.scoreB=Math.max(0,g.scoreB+d); renderGame(); save(); }
-function toggleBase(i){ g.bases[i]=!g.bases[i]; renderGame(); save(); }
+function chScore(t,d){if(t==='A')g.scoreA=Math.max(0,g.scoreA+d);else g.scoreB=Math.max(0,g.scoreB+d);renderGame();save();}
+function toggleBase(i){g.bases[i]=!g.bases[i];renderGame();save();}
 
-// ════════════════════════════════════════
-//  SUBS
-// ════════════════════════════════════════
+// ════ SUBS ════
 function renderSubForm(){
   const team=document.getElementById('subTeamSel').value;
   const type=document.getElementById('subTypeSel').value;
@@ -1322,8 +1122,8 @@ function doSub(){
   const inId=parseInt(document.getElementById('subInSel').value);
   const reason=document.getElementById('subReason').value.trim();
   const newPos=document.getElementById('subNewPos').value;
-  if(!outId||!inId){ showToast('선수를 선택하세요'); return; }
-  if(outId===inId){ showToast('같은 선수입니다'); return; }
+  if(!outId||!inId){showToast('선수를 선택하세요');return;}
+  if(outId===inId){showToast('같은 선수입니다');return;}
   const outP=g.rosters[team].find(p=>p.id===outId);
   const inP=g.rosters[team].find(p=>p.id===inId);
   if(!outP||!inP) return;
@@ -1334,11 +1134,10 @@ function doSub(){
   g.subLog.unshift({inning:g.inning,half:g.half,team,type:typeLabel,
     out:`#${outP.num} ${outP.name}`,in:`#${inP.num} ${inP.name}`,
     pos:inP.pos,reason,time:new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})});
-  // 투수 교체 시 타이머 자동 시작
   if(type==='p') startTimer('pitchChanger');
   showToast(`${typeLabel}: #${inP.num} ${inP.name} 투입`);
   document.getElementById('subReason').value='';
-  renderSubLog(); updateSelects(); save();
+  renderSubLog();updateSelects();save();
 }
 function renderSubLog(){
   const el=document.getElementById('subLogList');
@@ -1354,61 +1153,55 @@ function renderSubLog(){
   </div>`).join('');
 }
 
-// ════════════════════════════════════════
-//  TAB / MISC
-// ════════════════════════════════════════
+// ════ TAB / MISC ════
 function switchTab(id){
   const tabs=['game','rosterA','rosterB','subs','kbo'];
-  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',tabs[i]===id);});
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===id));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   if(id==='rosterA') renderRoster('A');
   if(id==='rosterB') renderRoster('B');
-  if(id==='subs'){ renderSubForm(); renderSubLog(); }
-  if(id==='game'||id==='kbo') { renderGame(); }
+  if(id==='subs'){renderSubForm();renderSubLog();}
+  if(id==='game'||id==='kbo') renderGame();
 }
 function onTeamInput(){
   document.getElementById('tabA').textContent=document.getElementById('teamA').value||'홈팀';
   document.getElementById('tabB').textContent=document.getElementById('teamB').value||'원정팀';
-  renderGame(); save();
+  renderGame();save();
 }
 function showToast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
-  clearTimeout(g._tt); g._tt=setTimeout(()=>t.style.display='none',2500);
+  const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
+  clearTimeout(g._tt);g._tt=setTimeout(()=>t.style.display='none',2500);
 }
 function resetAll(){
   if(!confirm('게임 기록만 초기화합니다. 선수 명단은 유지됩니다.')) return;
-  g.scoreA=0; g.scoreB=0; g.inning=1; g.half='top';
-  g.balls=0; g.strikes=0; g.outs=0; g.bases=[false,false,false,false];
-  g.playLog=[]; g.inningScores={}; g.subLog=[]; g.curBatter=''; g.curPitcher='';
+  g.scoreA=0;g.scoreB=0;g.inning=1;g.half='top';
+  g.balls=0;g.strikes=0;g.outs=0;g.bases=[false,false,false,false];
+  g.playLog=[];g.inningScores={};g.subLog=[];g.curBatter='';g.curPitcher='';
   g.kbo={offTimeUsed:0,moundVisitUsed:0,catcherMoundUsed:0,catcherMoundMax:2,ballChangeUsed:0};
   g.rosters.A.forEach(p=>p.status='active');
   g.rosters.B.forEach(p=>p.status='active');
   document.getElementById('memoInput').value='';
-  // 타이머 전부 리셋
   Object.keys(timers).forEach(k=>resetTimer(k));
   localStorage.removeItem(SAVE_KEY);
-  renderGame(); showToast('게임 기록 초기화 완료 (선수 명단 유지)');
+  renderGame();showToast('게임 기록 초기화 완료 (선수 명단 유지)');
 }
 function copyReport(){
-  const tA=getTeamName('A'), tB=getTeamName('B');
+  const tA=getTeamName('A'),tB=getTeamName('B');
   const st=g.subLog.map(e=>`  ${e.inning}회${e.half==='top'?'초':'말'} [${e.type}] ${e.in} / ${e.out}${e.reason?' ('+e.reason+')':''}`).join('\n');
   const pl=g.playLog.map(p=>p.label).join(', ')||'없음';
   const k=g.kbo;
-  const txt=`[야구 심판 기록]\n${tA} ${g.scoreA} : ${g.scoreB} ${tB}\n현재: ${g.inning}회 ${g.half==='top'?'초':'말'}\n카운트: ${g.balls}볼 ${g.strikes}스트 ${g.outs}아웃\n주자: ${[1,2,3].filter(b=>g.bases[b]).map(b=>b+'루').join(', ')||'없음'}\n\n[KBO 규정 현황]\n공격팀 타임: ${k.offTimeUsed}/2\n감독 마운드 방문: ${k.moundVisitUsed}/2\n포수 마운드 방문: ${k.catcherMoundUsed}/${k.catcherMoundMax}\n볼 교체: ${k.ballChangeUsed}/3\n\n교체: ${st||'없음'}\n기록: ${pl}\n메모: ${document.getElementById('memoInput').value||'없음'}`;
+  const txt=`[야구 심판 기록]\n${tA} ${g.scoreA} : ${g.scoreB} ${tB}\n현재: ${g.inning}회 ${g.half==='top'?'초':'말'}\n카운트: ${g.balls}볼 ${g.strikes}스트 ${g.outs}아웃\n주자: ${[1,2,3].filter(b=>g.bases[b]).map(b=>b+'루').join(', ')||'없음'}\n\n[KBO 규정 현황]\n공격팀 타임: ${k.offTimeUsed}/3\n감독 마운드 방문: ${k.moundVisitUsed}/2\n포수 마운드 방문: ${k.catcherMoundUsed}/${k.catcherMoundMax}\n볼 교체: ${k.ballChangeUsed}/3\n\n교체: ${st||'없음'}\n기록: ${pl}\n메모: ${document.getElementById('memoInput').value||'없음'}`;
   navigator.clipboard.writeText(txt).then(()=>showToast('복사 완료')).catch(()=>alert(txt));
 }
 
-// ════════════════════════════════════════
-//  BOOT
-// ════════════════════════════════════════
-const rostersLoaded = loadRosters();
-const gameLoaded = loadState();
-if(!rostersLoaded && !gameLoaded) initRosters();
-// 타이머 초기 표시
+// ════ BOOT ════
+const rostersLoaded=loadRosters();
+const gameLoaded=loadState();
+if(!rostersLoaded&&!gameLoaded) initRosters();
 Object.keys(timers).forEach(k=>updateTimerDisplay(k));
 renderGame();
-if(gameLoaded || rostersLoaded) showToast('이전 경기 기록을 불러왔습니다');
+if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니다');
 </script>
 </body>
 </html>
