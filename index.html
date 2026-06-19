@@ -1549,7 +1549,7 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
     devices = all.filter(function (d) { return d.kind === 'videoinput'; });
   }
 
-async function startCamera() {
+  async function startCamera() {
     if (!cvReady) { statusEl.textContent = 'OpenCV 로딩 중이에요. 잠시 후 다시 눌러주세요.'; return; }
     try {
       if (window.abscStream) { window.abscStream.getTracks().forEach(function (t) { t.stop(); }); }
@@ -1565,9 +1565,8 @@ async function startCamera() {
       resizeCanvases();
       cap = new cv.VideoCapture(video);
       
-      // 🔥 [핵심 추가] 카메라 새로 켤 때 이전 프레임 흔적을 완전히 지웁니다.
       if (prevGray) { prevGray.delete(); prevGray = null; }
-      if (src) { src.delete(); src = null; } // src도 깨끗하게 초기화
+      if (src) { src.delete(); src = null; }
       
       streaming = true;
       statusEl.textContent = '카메라 작동 중. 먼저 "스트라이크존 보정"을 눌러주세요.';
@@ -1577,13 +1576,108 @@ async function startCamera() {
     }
   }
 
-  // 2. 프레임 처리 함수 수정 (크기 다르면 무조건 튕겨내고 재생성)
+  function inZone(p) {
+    if (!zone) return false;
+    return p.x >= zone.x1 && p.x <= zone.x2 && p.y >= zone.y1 && p.y <= zone.y2;
+  }
+
+  function tryLinkToHost(isStrike) {
+    if (!linkEnabled) return false;
+    try {
+      if (isStrike) { addStrike(); } else { addBall(); }
+      return true;
+    } catch (e) {
+      var key = isStrike ? 'strike' : 'ball';
+      if (!warnedNoButton[key]) {
+        warnedNoButton[key] = true;
+        statusEl.textContent = '⚠ 기존 카운터 연동 중 오류가 발생해 ABS 자체 카운터만 기록 중이에요.';
+      }
+      return false;
+    }
+  }
+
+  function pushLog(isStrike, linked, pitchId) {
+    if (logEl.querySelector('div')&&logEl.firstElementChild.style && logEl.children.length===1 && logEl.textContent.trim()==='없음') logEl.innerHTML='';
+    var row = document.createElement('div');
+    row.className = 'abs-log-row';
+    var left = document.createElement('span');
+    left.textContent = '판정 ' + (localBall + localStrike);
+    var right = document.createElement('span');
+    var r = document.createElement('span');
+    r.innerHTML = '<span class="ptag ' + (isStrike ? 'ptag-strike' : 'ptag-ball') + '">' + (isStrike ? '스트라이크' : '볼') + '</span>' + (linked ? ' <span style="color:#1d9e75">· 연동됨</span>' : '');
+    right.appendChild(r);
+    var replayBtn = document.createElement('button');
+    replayBtn.className = 'abs-replay-btn';
+    replayBtn.textContent = '▶ 다시보기';
+    replayBtn.addEventListener('click', function () { openReplay(pitchId); });
+    right.appendChild(replayBtn);
+    row.appendChild(left);
+    row.appendChild(right);
+    logEl.insertBefore(row, logEl.firstChild);
+  }
+
+  function finalizeJudgment() {
+    if (!zone) { statusEl.textContent = '먼저 스트라이크존을 보정해주세요.'; trajectory = []; return; }
+    if (trajectory.length === 0) return;
+    var p = trajectory[trajectory.length - 1];
+    var isStrike = inZone(p);
+    if (isStrike) { localStrike++; } else { localBall++; }
+    ballNEl.textContent = localBall;
+    strikeNEl.textContent = localStrike;
+    resultEl.textContent = isStrike ? '스트라이크!' : '볼!';
+    resultEl.className = 'abs-result pulse ' + (isStrike ? 'strike' : 'ball');
+    setTimeout(function () { resultEl.classList.remove('pulse'); }, 140);
+    var linked = tryLinkToHost(isStrike);
+
+    var pitchId = nextPitchId++;
+    pitchRecords.set(pitchId, { frames: rollingBuffer.slice(), isStrike: isStrike });
+    if (pitchRecords.size > MAX_RECORDS) {
+      var oldestKey = pitchRecords.keys().next().value;
+      pitchRecords.delete(oldestKey);
+    }
+    pushLog(isStrike, linked, pitchId);
+    trajectory = [];
+  }
+
+  function stopReplayTimer() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } }
+  function drawReplayFrame() {
+    if (!replayFrames || replayFrames.length === 0) return;
+    var img = new Image();
+    img.onload = function () {
+      replayCanvas.width = img.width;
+      replayCanvas.height = img.height;
+      rctx.drawImage(img, 0, 0);
+    };
+    img.src = replayFrames[replayIdx];
+  }
+  function startReplayTimer() {
+    stopReplayTimer();
+    replayTimer = setInterval(function () {
+      if (!replayFrames || replayFrames.length === 0) return;
+      replayIdx = (replayIdx + 1) % replayFrames.length;
+      drawReplayFrame();
+    }, CAPTURE_INTERVAL_MS / replaySpeed);
+  }
+  function openReplay(pitchId) {
+    var record = pitchRecords.get(pitchId);
+    if (!record || record.frames.length === 0) { statusEl.textContent = '이 투구의 다시보기는 만료됐어요.'; return; }
+    replayFrames = record.frames;
+    replayIdx = 0;
+    replayPlaying = true;
+    replaySpeed = 1;
+    replayPlayBtn.textContent = '일시정지';
+    replaySlowBtn.textContent = '느리게 (0.4배)';
+    replayTitle.textContent = (record.isStrike ? '스트라이크' : '볼') + ' 다시보기';
+    replayPanel.classList.add('open');
+    drawReplayFrame();
+    startReplayTimer();
+  }
+
   var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierarchy;
   function processFrame() {
     if (!streaming || !cvReady) return;
     if (video.videoWidth === 0 || video.videoHeight === 0) return;
 
-    // 만약 카메라 해상도가 바뀌었거나 최초 실행 시 매트릭스 전체 재할당
     if (!src || src.cols !== video.videoWidth || src.rows !== video.videoHeight) {
       if (src) src.delete();
       if (gray) gray.delete();
@@ -1592,7 +1686,7 @@ async function startCamera() {
       if (brightMask) brightMask.delete();
       if (candidate) candidate.delete();
       if (kernel) kernel.delete();
-      if (prevGray) { prevGray.delete(); prevGray = null; } // 🔥 크기 다르면 옛날 프레임 무조건 삭제
+      if (prevGray) { prevGray.delete(); prevGray = null; }
 
       src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
       gray = new cv.Mat(); 
@@ -1609,66 +1703,73 @@ async function startCamera() {
       cap.read(src);
       cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
       
-      if (prevGray) {
-        // 🔥 [철벽 방어] 혹시라도 prevGray와 현재 gray의 가로/세로 크기가 다르면 계산 안 하고 스킵!
-        if (prevGray.cols !== gray.cols || prevGray.rows !== gray.rows) {
-          prevGray.delete();
-          prevGray = gray.clone();
-          return; // 이번 프레임은 안전하게 패스
-        }
+      // 🌟 [핵심 변경] 최초 실행 시 prevGray가 없으면 현재 프레임을 복사해 넣고 루프를 안전하게 시작합니다.
+      if (!prevGray) {
+        prevGray = gray.clone();
+        drawOverlay(null); // 초기 오버레이 라인 및 스트라이크 존 렌더링 보장
+        return;
+      }
 
-        cv.absdiff(gray, prevGray, diff);
-        cv.threshold(diff, motionMask, parseInt(motionSlider.value, 10), 255, cv.THRESH_BINARY);
-        cv.threshold(gray, brightMask, parseInt(brightSlider.value, 10), 255, cv.THRESH_BINARY);
-        cv.bitwise_and(motionMask, brightMask, candidate);
-        cv.dilate(candidate, candidate, kernel);
+      if (prevGray.cols !== gray.cols || prevGray.rows !== gray.rows) {
+        prevGray.delete();
+        prevGray = gray.clone();
+        return;
+      }
 
-        if (debugToggle.checked) { 
-          debugCanvas.style.display = 'block'; 
-          cv.imshow(debugCanvas, candidate); 
-        } else { 
-          debugCanvas.style.display = 'none'; 
-        }
+      cv.absdiff(gray, prevGray, diff);
+      cv.threshold(diff, motionMask, parseInt(motionSlider.value, 10), 255, cv.THRESH_BINARY);
+      cv.threshold(gray, brightMask, parseInt(brightSlider.value, 10), 255, cv.THRESH_BINARY);
+      cv.bitwise_and(motionMask, brightMask, candidate);
+      cv.dilate(candidate, candidate, kernel);
 
-        contours = new cv.MatVector();
-        hierarchy = new cv.Mat();
-        cv.findContours(candidate, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+      if (debugToggle.checked) { 
+        debugCanvas.style.display = 'block'; 
+        cv.imshow(debugCanvas, candidate); 
+      } else { 
+        debugCanvas.style.display = 'none'; 
+      }
 
-        var minR = parseInt(minrSlider.value, 10);
-        var maxR = parseInt(maxrSlider.value, 10);
-        var best = null;
-        for (var i = 0; i < contours.size(); i++) {
-          var cnt = contours.get(i);
-          var area = cv.contourArea(cnt);
-          var circleInfo = cv.minEnclosingCircle(cnt);
-          var r = circleInfo.radius;
-          if (r >= minR && r <= maxR) {
-            var circleArea = Math.PI * r * r;
-            var circularity = circleArea > 0 ? area / circleArea : 0;
-            if (circularity > 0.45) {
-              if (!best || r > best.r) best = { x: circleInfo.center.x, y: circleInfo.center.y, r: r };
-            }
+      contours = new cv.MatVector();
+      hierarchy = new cv.Mat();
+      cv.findContours(candidate, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+      var minR = parseInt(minrSlider.value, 10);
+      var maxR = parseInt(maxrSlider.value, 10);
+      var best = null;
+      for (var i = 0; i < contours.size(); i++) {
+        var cnt = contours.get(i);
+        var area = cv.contourArea(cnt);
+        var circleInfo = cv.minEnclosingCircle(cnt);
+        var r = circleInfo.radius;
+        if (r >= minR && r <= maxR) {
+          var circleArea = Math.PI * r * r;
+          var circularity = circleArea > 0 ? area / circleArea : 0;
+          if (circularity > 0.45) {
+            if (!best || r > best.r) best = { x: circleInfo.center.x, y: circleInfo.center.y, r: r };
           }
-          cnt.delete();
         }
-        contours.delete(); hierarchy.delete();
+        cnt.delete();
+      }
+      contours.delete(); hierarchy.delete();
 
-        var now = performance.now();
-        if (best) {
-          trajectory.push(best);
-          if (trajectory.length > 12) trajectory.shift();
-          lastSeenAt = now; tracking = true;
-          if (!calibrating) statusEl.textContent = '공 추적 중...';
-        } else if (tracking && now - lastSeenAt > LOST_MS) {
-          tracking = false;
-          finalizeJudgment();
-        }
-        drawOverlay(best);
-        captureFrame(best, now);
+      var now = performance.now();
+      if (best) {
+        trajectory.push(best);
+        if (trajectory.length > 12) trajectory.shift();
+        lastSeenAt = now; tracking = true;
+        if (!calibrating) statusEl.textContent = '공 추적 중...';
+      } else if (tracking && now - lastSeenAt > LOST_MS) {
+        tracking = false;
+        finalizeJudgment();
       }
       
-      if (prevGray) prevGray.delete();
-      prevGray = gray.clone(); // 다음 프레임을 위해 저장
+      // 🌟 실시간 라인 및 공 매핑 드로잉 함수 호출
+      drawOverlay(best);
+      captureFrame(best, now);
+      
+      // 안전하게 이전 프레임 리소스 교체
+      prevGray.delete();
+      prevGray = gray.clone();
     } catch (err) {
       statusEl.textContent = '처리 오류: ' + err.message;
     }
