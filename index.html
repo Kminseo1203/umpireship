@@ -112,6 +112,26 @@ input:focus,select:focus,textarea:focus{border-color:#666}
 .modal-cancel{padding:7px 14px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-size:13px}
 .modal-apply{padding:7px 14px;border:none;border-radius:8px;background:#1a1a1a;color:#fff;cursor:pointer;font-size:13px;font-weight:600}
 @media(max-width:500px){.count-grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}.score-num{font-size:30px}}
+.abs-stage{position:relative;width:100%;max-width:420px;margin:0 auto;background:#000;border-radius:10px;overflow:hidden}
+.abs-stage video{width:100%;display:block}
+.abs-stage canvas{position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair}
+.abs-status{text-align:center;font-size:12px;color:#888;margin-top:8px;min-height:16px}
+.abs-result{border-radius:10px;padding:14px 16px;font-size:20px;font-weight:700;text-align:center;margin-bottom:10px;transition:transform .12s ease}
+.abs-result.strike{background:#faece7;color:#993c1d}
+.abs-result.ball{background:#e1f5ee;color:#0f6e56}
+.abs-result.pulse{transform:scale(1.03)}
+.abs-toggle{position:relative;width:38px;height:22px;background:#ddd;border-radius:20px;cursor:pointer;flex-shrink:0}
+.abs-toggle.on{background:#1d9e75}
+.abs-toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:left .15s ease}
+.abs-toggle.on::after{left:18px}
+.abs-log{max-height:140px;overflow-y:auto}
+.abs-log-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #f0f0f0;font-size:12px}
+.abs-log-row:last-child{border-bottom:none}
+.abs-replay-btn{background:none;border:1px solid #ddd;color:#888;border-radius:6px;font-size:11px;padding:1px 7px;margin-left:8px;cursor:pointer}
+.abs-replay-btn:hover{background:#f5f5f5}
+.abs-replay{display:none}
+.abs-replay.open{display:block}
+.abs-replay canvas{width:100%;max-width:280px;display:block;margin:0 auto;border-radius:8px;background:#000}
 </style>
 </head>
 <body>
@@ -123,6 +143,7 @@ input:focus,select:focus,textarea:focus{border-color:#666}
   <button class="tab" onclick="switchTab('rosterB')" id="tabB">원정팀</button>
   <button class="tab" onclick="switchTab('subs')">교체</button>
   <button class="tab" onclick="switchTab('kbo')">KBO규정</button>
+  <button class="tab" onclick="switchTab('abs')">ABS</button>
 </div>
 
 <!-- GAME -->
@@ -203,8 +224,8 @@ input:focus,select:focus,textarea:focus{border-color:#666}
         </div>
         <div class="kbo-timer-box" style="min-width:140px">
           <div>
-            <div class="kbo-timer-label">투수교체 (2:10)</div>
-            <div class="kbo-timer-val ok" id="pitchChangerTimerVal">2:10</div>
+            <div class="kbo-timer-label">투수교체 (2:20)</div>
+            <div class="kbo-timer-val ok" id="pitchChangerTimerVal">2:20</div>
           </div>
           <button class="timer-btn" id="pitchChangerTimerBtn" onclick="toggleTimer('pitchChanger')">▶ 시작</button>
         </div>
@@ -416,8 +437,8 @@ input:focus,select:focus,textarea:focus{border-color:#666}
       <div class="kbo-timer-box">
         <div>
           <div class="kbo-timer-label">⏱ 투구 간격 — 주자 없을 때 (20초)</div>
-          <div class="kbo-timer-val ok" id="pitchTimerVal2">0:12</div>
-          <div class="kbo-rule-note">주자 없을 때 공 받은 후 20초 이내 투구. 이후 볼 선언 </div>
+          <div class="kbo-timer-val ok" id="pitchTimerVal2">0:20</div>
+          <div class="kbo-rule-note">주자 없을 때 공 받은 후 20초 이내 투구. 1회 위반 경고, 이후 볼 선언 + 벌금.</div>
         </div>
         <button class="timer-btn" id="pitchTimerBtn2" onclick="toggleTimer('pitch')">▶ 시작</button>
       </div>
@@ -498,8 +519,69 @@ input:focus,select:focus,textarea:focus{border-color:#666}
     </div>
   </div>
 </div>
+
+<!-- ABS -->
+<div class="panel" id="panel-abs">
+  <div class="sec-title">ABS 카메라 자동 추적 판정 (실험적)</div>
+  <div class="card">
+    <div style="font-size:12px;color:#888;line-height:1.6;margin-bottom:12px">
+      타자 뒤쪽 정면 카메라 · 흰 공 · ~90km/h 이하 권장. 시작 전 "스트라이크존 보정"을 꼭 먼저 해주세요.
+      실제 ABS(호크아이/트랙맨)와 달리 웹캠 1대로 본 2차원 위치 기준 근사치입니다.
+    </div>
+    <div class="abs-stage">
+      <video id="abs-video" autoplay playsinline muted></video>
+      <canvas id="abs-overlay"></canvas>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:10px">
+      <button class="btn" id="abs-start">카메라 시작</button>
+      <button class="btn" id="abs-switch-cam">카메라 전환</button>
+      <button class="btn" id="abs-calib">스트라이크존 보정</button>
+      <button class="btn" id="abs-judge-now">지금 판정</button>
+    </div>
+    <div class="abs-status" id="abs-status">카메라를 시작해주세요.</div>
+  </div>
+
+  <div id="abs-result" class="abs-result ball">투구를 기다리는 중</div>
+
+  <div class="count-grid" style="grid-template-columns:1fr 1fr">
+    <div class="count-card"><div class="count-lbl">ABS 볼</div><div style="font-size:20px;font-weight:700" id="abs-ball-n">0</div></div>
+    <div class="count-card"><div class="count-lbl">ABS 스트라이크</div><div style="font-size:20px;font-weight:700" id="abs-strike-n">0</div></div>
+  </div>
+
+  <div class="card row" style="justify-content:space-between;align-items:center">
+    <span style="font-size:13px">기존 카운트(+ 볼/+ 스트)와 자동 연동</span>
+    <div class="abs-toggle on" id="abs-link-toggle"></div>
+  </div>
+
+  <details class="card">
+    <summary style="cursor:pointer;font-size:13px;font-weight:600">추적 민감도 보정</summary>
+    <div class="row" style="margin-top:10px"><span style="width:90px;font-size:12px">움직임 감도</span><input type="range" id="abs-motion" min="10" max="80" value="25" style="flex:1"><span id="abs-motion-v" style="font-size:12px">25</span></div>
+    <div class="row" style="margin-top:6px"><span style="width:90px;font-size:12px">밝기 기준</span><input type="range" id="abs-bright" min="120" max="240" value="180" style="flex:1"><span id="abs-bright-v" style="font-size:12px">180</span></div>
+    <div class="row" style="margin-top:6px"><span style="width:90px;font-size:12px">공 크기(최소)</span><input type="range" id="abs-minr" min="2" max="20" value="4" style="flex:1"><span id="abs-minr-v" style="font-size:12px">4</span></div>
+    <div class="row" style="margin-top:6px"><span style="width:90px;font-size:12px">공 크기(최대)</span><input type="range" id="abs-maxr" min="10" max="60" value="30" style="flex:1"><span id="abs-maxr-v" style="font-size:12px">30</span></div>
+    <label class="row" style="margin-top:8px;font-size:12px"><input type="checkbox" id="abs-debug-toggle"> 디버그 마스크 보기</label>
+    <canvas id="abs-debug" style="width:160px;max-width:40%;border-radius:6px;margin-top:8px"></canvas>
+  </details>
+
+  <div class="sec-title">ABS 판정 기록</div>
+  <div class="card abs-log" id="abs-log"><div style="font-size:13px;color:#888">없음</div></div>
+
+  <div class="card abs-replay" id="abs-replay">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <span id="abs-replay-title" style="font-size:13px;font-weight:600">다시보기</span>
+      <button class="btn" id="abs-replay-close" style="padding:3px 9px">닫기</button>
+    </div>
+    <canvas id="abs-replay-canvas"></canvas>
+    <div class="row" style="justify-content:center;margin-top:10px">
+      <button class="btn" id="abs-replay-play">일시정지</button>
+      <button class="btn" id="abs-replay-slow">느리게 (0.4배)</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /app -->
 
+<script src="https://docs.opencv.org/4.x/opencv.js" async></script>
 <script>
 const SAVE_KEY = 'baseball_umpire_v3';
 const ROSTER_KEY = 'baseball_umpire_rosters_v1';
@@ -532,7 +614,7 @@ const timers = {
   mound:       { total:30,  remaining:30,  running:false, interval:null },
   inning:      { total:120, remaining:120, running:false, interval:null },
   pitchChanger:{ total:140, remaining:140, running:false, interval:null },
-  pitch:       { total:12,  remaining:12,  running:false, interval:null },
+  pitch:       { total:20,  remaining:20,  running:false, interval:null },
 };
 
 function saveState(){
@@ -647,7 +729,7 @@ const TIMER_DEFS={
   mound:       {total:30, warn:5, valIds:['moundTimerVal','moundTimerVal2'],  btnIds:['moundTimerBtn','moundTimerBtn2']},
   inning:      {total:120,warn:20,valIds:['inningTimerVal','inningTimerVal2'],btnIds:['inningTimerBtn','inningTimerBtn2']},
   pitchChanger:{total:140,warn:25,valIds:['pitchChangerTimerVal','pitchChangerTimerVal2'],btnIds:['pitchChangerTimerBtn','pitchChangerTimerBtn2']},
-  pitch:       {total:12, warn:3, valIds:['pitchTimerVal','pitchTimerVal2'],  btnIds:['pitchTimerBtn','pitchTimerBtn2']},
+  pitch:       {total:20, warn:3, valIds:['pitchTimerVal','pitchTimerVal2'],  btnIds:['pitchTimerBtn','pitchTimerBtn2']},
 };
 function fmtTime(s){const m=Math.floor(s/60),sec=s%60;return `${m}:${String(sec).padStart(2,'0')}`;}
 function updateTimerDisplay(key){
@@ -673,7 +755,7 @@ function startTimer(key){
     if(t.remaining<=0){
       clearInterval(t.interval);t.running=false;
       def.btnIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='↺ 재시작';el.classList.remove('active-timer');}});
-      const labels={mound:'마운드 방문 30초 초과!',inning:'이닝 교대 2분 초과!',pitchChanger:'투수교체 시간 초과!',pitch:'투구 간격 12초 초과!'};
+      const labels={mound:'마운드 방문 30초 초과!',inning:'이닝 교대 2분 초과!',pitchChanger:'투수교체 시간 초과!',pitch:'투구 간격 20초 초과!'};
       showToast('⚠️ '+labels[key]);
     } else if(key==='mound'&&t.remaining===5){
       showToast('⏰ 마운드 방문 5초 남음 — 즉시 복귀 통보');
@@ -1228,7 +1310,7 @@ function renderSubLog(){
 }
 
 function switchTab(id){
-  const tabs=['game','rosterA','rosterB','subs','kbo'];
+  const tabs=['game','rosterA','rosterB','subs','kbo','abs'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===id));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
@@ -1274,6 +1356,391 @@ if(!rostersLoaded&&!gameLoaded) initRosters();
 Object.keys(timers).forEach(k=>updateTimerDisplay(k));
 renderGame();
 if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니다');
+
+/* ===================== ABS 카메라 자동 추적 판정 ===================== */
+(function () {
+  var video, overlay, octx, statusEl, resultEl, ballNEl, strikeNEl, logEl, linkToggle;
+  var startBtn, switchCamBtn, calibBtn, judgeNowBtn, debugToggle, debugCanvas;
+  var replayPanel, replayTitle, replayCanvas, rctx, replayCloseBtn, replayPlayBtn, replaySlowBtn;
+  var motionSlider, brightSlider, minrSlider, maxrSlider;
+
+  var cvReady = false, streaming = false, devices = [], currentDeviceIndex = 0;
+  var cap = null, prevGray = null, loopHandle = null;
+  var calibrating = false, calibPoints = [], zone = null;
+  var trajectory = [], lastSeenAt = 0, tracking = false, LOST_MS = 220;
+  var localBall = 0, localStrike = 0, linkEnabled = true, warnedNoButton = { ball: false, strike: false };
+
+  var captureCanvas = document.createElement('canvas');
+  var cctx = captureCanvas.getContext('2d');
+  var CAPTURE_W = 220, CAPTURE_INTERVAL_MS = 70, BUFFER_MS = 1400;
+  var rollingBuffer = [], lastCaptureAt = 0;
+  var pitchRecords = new Map(), nextPitchId = 1, MAX_RECORDS = 25;
+  var replayFrames = null, replayIdx = 0, replayTimer = null, replayPlaying = true, replaySpeed = 1;
+
+  var inited = false;
+  function initOnce() {
+    if (inited) return;
+    inited = true;
+    video = document.getElementById('abs-video');
+    overlay = document.getElementById('abs-overlay');
+    octx = overlay.getContext('2d');
+    statusEl = document.getElementById('abs-status');
+    resultEl = document.getElementById('abs-result');
+    ballNEl = document.getElementById('abs-ball-n');
+    strikeNEl = document.getElementById('abs-strike-n');
+    logEl = document.getElementById('abs-log');
+    linkToggle = document.getElementById('abs-link-toggle');
+    startBtn = document.getElementById('abs-start');
+    switchCamBtn = document.getElementById('abs-switch-cam');
+    calibBtn = document.getElementById('abs-calib');
+    judgeNowBtn = document.getElementById('abs-judge-now');
+    debugToggle = document.getElementById('abs-debug-toggle');
+    debugCanvas = document.getElementById('abs-debug');
+    replayPanel = document.getElementById('abs-replay');
+    replayTitle = document.getElementById('abs-replay-title');
+    replayCanvas = document.getElementById('abs-replay-canvas');
+    rctx = replayCanvas.getContext('2d');
+    replayCloseBtn = document.getElementById('abs-replay-close');
+    replayPlayBtn = document.getElementById('abs-replay-play');
+    replaySlowBtn = document.getElementById('abs-replay-slow');
+    motionSlider = document.getElementById('abs-motion');
+    brightSlider = document.getElementById('abs-bright');
+    minrSlider = document.getElementById('abs-minr');
+    maxrSlider = document.getElementById('abs-maxr');
+
+    ['motion','bright','minr','maxr'].forEach(function (k) {
+      var s = document.getElementById('abs-' + k);
+      var v = document.getElementById('abs-' + k + '-v');
+      s.addEventListener('input', function () { v.textContent = s.value; });
+    });
+
+    var check = setInterval(function () {
+      if (window.cv && cv.Mat) {
+        clearInterval(check);
+        cvReady = true;
+        statusEl.textContent = '준비 완료. 카메라를 시작해주세요.';
+      }
+    }, 200);
+
+    startBtn.addEventListener('click', startCamera);
+    switchCamBtn.addEventListener('click', function () {
+      if (devices.length < 2) {
+        listDevices().then(function () {
+          if (devices.length < 2) { statusEl.textContent = '전환할 카메라가 더 없어요.'; return; }
+          currentDeviceIndex = (currentDeviceIndex + 1) % devices.length;
+          startCamera();
+        });
+      } else {
+        currentDeviceIndex = (currentDeviceIndex + 1) % devices.length;
+        startCamera();
+      }
+    });
+    calibBtn.addEventListener('click', function () {
+      calibrating = true;
+      calibPoints = [];
+      statusEl.textContent = '스트라이크존의 좌상단 모서리를 클릭하세요.';
+    });
+    overlay.addEventListener('click', function (e) {
+      if (!calibrating) return;
+      var p = videoToCanvasCoords(e.clientX, e.clientY);
+      calibPoints.push(p);
+      if (calibPoints.length === 1) {
+        statusEl.textContent = '이제 우하단 모서리를 클릭하세요.';
+      } else if (calibPoints.length === 2) {
+        zone = {
+          x1: Math.min(calibPoints[0].x, calibPoints[1].x),
+          y1: Math.min(calibPoints[0].y, calibPoints[1].y),
+          x2: Math.max(calibPoints[0].x, calibPoints[1].x),
+          y2: Math.max(calibPoints[0].y, calibPoints[1].y)
+        };
+        calibrating = false;
+        statusEl.textContent = '존 보정 완료. 이제 투구를 추적할게요.';
+      }
+    });
+    judgeNowBtn.addEventListener('click', finalizeJudgment);
+    linkToggle.addEventListener('click', function () {
+      linkEnabled = !linkEnabled;
+      linkToggle.classList.toggle('on', linkEnabled);
+    });
+    replayCloseBtn.addEventListener('click', function () {
+      stopReplayTimer();
+      replayPanel.classList.remove('open');
+      replayFrames = null;
+    });
+    replayPlayBtn.addEventListener('click', function () {
+      replayPlaying = !replayPlaying;
+      replayPlayBtn.textContent = replayPlaying ? '일시정지' : '재생';
+      if (replayPlaying) startReplayTimer(); else stopReplayTimer();
+    });
+    replaySlowBtn.addEventListener('click', function () {
+      replaySpeed = replaySpeed === 1 ? 0.4 : 1;
+      replaySlowBtn.textContent = replaySpeed === 1 ? '느리게 (0.4배)' : '원래 속도';
+      if (replayPlaying) startReplayTimer();
+    });
+  }
+
+  function videoToCanvasCoords(clientX, clientY) {
+    var rect = overlay.getBoundingClientRect();
+    var sx = video.videoWidth / rect.width;
+    var sy = video.videoHeight / rect.height;
+    return { x: (clientX - rect.left) * sx, y: (clientY - rect.top) * sy };
+  }
+
+  function resizeCanvases() {
+    overlay.width = video.videoWidth;
+    overlay.height = video.videoHeight;
+    captureCanvas.width = CAPTURE_W;
+    captureCanvas.height = Math.round(CAPTURE_W * video.videoHeight / video.videoWidth);
+  }
+
+  function drawOverlay(ballPos) {
+    octx.clearRect(0, 0, overlay.width, overlay.height);
+    if (zone) {
+      octx.strokeStyle = '#1d9e75';
+      octx.lineWidth = 3;
+      octx.strokeRect(zone.x1, zone.y1, zone.x2 - zone.x1, zone.y2 - zone.y1);
+    }
+    if (calibrating && calibPoints.length === 1) {
+      octx.fillStyle = '#1d9e75';
+      octx.beginPath();
+      octx.arc(calibPoints[0].x, calibPoints[0].y, 5, 0, Math.PI * 2);
+      octx.fill();
+    }
+    trajectory.forEach(function (p, i) {
+      octx.fillStyle = 'rgba(29,158,117,' + (0.25 + 0.5 * (i / trajectory.length)) + ')';
+      octx.beginPath();
+      octx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      octx.fill();
+    });
+    if (ballPos) {
+      octx.strokeStyle = '#ef9f27';
+      octx.lineWidth = 2;
+      octx.beginPath();
+      octx.arc(ballPos.x, ballPos.y, ballPos.r, 0, Math.PI * 2);
+      octx.stroke();
+    }
+  }
+
+  function captureFrame(ballPos, now) {
+    if (now - lastCaptureAt < CAPTURE_INTERVAL_MS) return;
+    lastCaptureAt = now;
+    var cw = captureCanvas.width, ch = captureCanvas.height;
+    var scale = cw / video.videoWidth;
+    cctx.drawImage(video, 0, 0, cw, ch);
+    if (zone) {
+      cctx.strokeStyle = '#1d9e75';
+      cctx.lineWidth = 2;
+      cctx.strokeRect(zone.x1 * scale, zone.y1 * scale, (zone.x2 - zone.x1) * scale, (zone.y2 - zone.y1) * scale);
+    }
+    if (ballPos) {
+      cctx.strokeStyle = '#ef9f27';
+      cctx.lineWidth = 2;
+      cctx.beginPath();
+      cctx.arc(ballPos.x * scale, ballPos.y * scale, Math.max(2, ballPos.r * scale), 0, Math.PI * 2);
+      cctx.stroke();
+    }
+    rollingBuffer.push(captureCanvas.toDataURL('image/jpeg', 0.6));
+    var maxFrames = Math.ceil(BUFFER_MS / CAPTURE_INTERVAL_MS);
+    if (rollingBuffer.length > maxFrames) rollingBuffer.shift();
+  }
+
+  async function listDevices() {
+    var all = await navigator.mediaDevices.enumerateDevices();
+    devices = all.filter(function (d) { return d.kind === 'videoinput'; });
+  }
+
+  async function startCamera() {
+    if (!cvReady) { statusEl.textContent = 'OpenCV 로딩 중이에요. 잠시 후 다시 눌러주세요.'; return; }
+    try {
+      if (window.abscStream) { window.abscStream.getTracks().forEach(function (t) { t.stop(); }); }
+      await listDevices();
+      var constraints = { video: true, audio: false };
+      if (devices[currentDeviceIndex]) {
+        constraints.video = { deviceId: { exact: devices[currentDeviceIndex].deviceId } };
+      }
+      var stream = await navigator.mediaDevices.getUserMedia(constraints);
+      window.abscStream = stream;
+      video.srcObject = stream;
+      await new Promise(function (resolve) { video.onloadedmetadata = resolve; });
+      resizeCanvases();
+      cap = new cv.VideoCapture(video);
+      if (prevGray) { prevGray.delete(); prevGray = null; }
+      streaming = true;
+      statusEl.textContent = '카메라 작동 중. 먼저 "스트라이크존 보정"을 눌러주세요.';
+      if (!loopHandle) loopHandle = setInterval(processFrame, 50);
+    } catch (e) {
+      statusEl.textContent = '카메라를 시작할 수 없어요: ' + e.message;
+    }
+  }
+
+  function inZone(p) {
+    if (!zone) return false;
+    return p.x >= zone.x1 && p.x <= zone.x2 && p.y >= zone.y1 && p.y <= zone.y2;
+  }
+
+  function tryLinkToHost(isStrike) {
+    if (!linkEnabled) return false;
+    try {
+      if (isStrike) { addStrike(); } else { addBall(); }
+      return true;
+    } catch (e) {
+      var key = isStrike ? 'strike' : 'ball';
+      if (!warnedNoButton[key]) {
+        warnedNoButton[key] = true;
+        statusEl.textContent = '⚠ 기존 카운터 연동 중 오류가 발생해 ABS 자체 카운터만 기록 중이에요.';
+      }
+      return false;
+    }
+  }
+
+  function pushLog(isStrike, linked, pitchId) {
+    if (logEl.querySelector('div')&&logEl.firstElementChild.style && logEl.children.length===1 && logEl.textContent.trim()==='없음') logEl.innerHTML='';
+    var row = document.createElement('div');
+    row.className = 'abs-log-row';
+    var left = document.createElement('span');
+    left.textContent = '판정 ' + (localBall + localStrike);
+    var right = document.createElement('span');
+    var r = document.createElement('span');
+    r.innerHTML = '<span class="ptag ' + (isStrike ? 'ptag-strike' : 'ptag-ball') + '">' + (isStrike ? '스트라이크' : '볼') + '</span>' + (linked ? ' <span style="color:#1d9e75">· 연동됨</span>' : '');
+    right.appendChild(r);
+    var replayBtn = document.createElement('button');
+    replayBtn.className = 'abs-replay-btn';
+    replayBtn.textContent = '▶ 다시보기';
+    replayBtn.addEventListener('click', function () { openReplay(pitchId); });
+    right.appendChild(replayBtn);
+    row.appendChild(left);
+    row.appendChild(right);
+    logEl.insertBefore(row, logEl.firstChild);
+  }
+
+  function finalizeJudgment() {
+    if (!zone) { statusEl.textContent = '먼저 스트라이크존을 보정해주세요.'; trajectory = []; return; }
+    if (trajectory.length === 0) return;
+    var p = trajectory[trajectory.length - 1];
+    var isStrike = inZone(p);
+    if (isStrike) { localStrike++; } else { localBall++; }
+    ballNEl.textContent = localBall;
+    strikeNEl.textContent = localStrike;
+    resultEl.textContent = isStrike ? '스트라이크!' : '볼!';
+    resultEl.className = 'abs-result pulse ' + (isStrike ? 'strike' : 'ball');
+    setTimeout(function () { resultEl.classList.remove('pulse'); }, 140);
+    var linked = tryLinkToHost(isStrike);
+
+    var pitchId = nextPitchId++;
+    pitchRecords.set(pitchId, { frames: rollingBuffer.slice(), isStrike: isStrike });
+    if (pitchRecords.size > MAX_RECORDS) {
+      var oldestKey = pitchRecords.keys().next().value;
+      pitchRecords.delete(oldestKey);
+    }
+    pushLog(isStrike, linked, pitchId);
+    trajectory = [];
+  }
+
+  function stopReplayTimer() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } }
+  function drawReplayFrame() {
+    if (!replayFrames || replayFrames.length === 0) return;
+    var img = new Image();
+    img.onload = function () {
+      replayCanvas.width = img.width;
+      replayCanvas.height = img.height;
+      rctx.drawImage(img, 0, 0);
+    };
+    img.src = replayFrames[replayIdx];
+  }
+  function startReplayTimer() {
+    stopReplayTimer();
+    replayTimer = setInterval(function () {
+      if (!replayFrames || replayFrames.length === 0) return;
+      replayIdx = (replayIdx + 1) % replayFrames.length;
+      drawReplayFrame();
+    }, CAPTURE_INTERVAL_MS / replaySpeed);
+  }
+  function openReplay(pitchId) {
+    var record = pitchRecords.get(pitchId);
+    if (!record || record.frames.length === 0) { statusEl.textContent = '이 투구의 다시보기는 만료됐어요.'; return; }
+    replayFrames = record.frames;
+    replayIdx = 0;
+    replayPlaying = true;
+    replaySpeed = 1;
+    replayPlayBtn.textContent = '일시정지';
+    replaySlowBtn.textContent = '느리게 (0.4배)';
+    replayTitle.textContent = (record.isStrike ? '스트라이크' : '볼') + ' 다시보기';
+    replayPanel.classList.add('open');
+    drawReplayFrame();
+    startReplayTimer();
+  }
+
+  var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierarchy;
+  function processFrame() {
+    if (!streaming || !cvReady) return;
+    if (!src) {
+      src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
+      gray = new cv.Mat(); diff = new cv.Mat(); motionMask = new cv.Mat();
+      brightMask = new cv.Mat(); candidate = new cv.Mat();
+      kernel = cv.Mat.ones(5, 5, cv.CV_8U);
+    }
+    try {
+      cap.read(src);
+      cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+      if (prevGray) {
+        cv.absdiff(gray, prevGray, diff);
+        cv.threshold(diff, motionMask, parseInt(motionSlider.value, 10), 255, cv.THRESH_BINARY);
+        cv.threshold(gray, brightMask, parseInt(brightSlider.value, 10), 255, cv.THRESH_BINARY);
+        cv.bitwise_and(motionMask, brightMask, candidate);
+        cv.dilate(candidate, candidate, kernel);
+
+        if (debugToggle.checked) { debugCanvas.style.display = 'block'; cv.imshow('abs-debug', candidate); }
+        else { debugCanvas.style.display = 'none'; }
+
+        contours = new cv.MatVector();
+        hierarchy = new cv.Mat();
+        cv.findContours(candidate, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+        var minR = parseInt(minrSlider.value, 10);
+        var maxR = parseInt(maxrSlider.value, 10);
+        var best = null;
+        for (var i = 0; i < contours.size(); i++) {
+          var cnt = contours.get(i);
+          var area = cv.contourArea(cnt);
+          var circleInfo = cv.minEnclosingCircle(cnt);
+          var r = circleInfo.radius;
+          if (r >= minR && r <= maxR) {
+            var circleArea = Math.PI * r * r;
+            var circularity = circleArea > 0 ? area / circleArea : 0;
+            if (circularity > 0.45) {
+              if (!best || r > best.r) best = { x: circleInfo.center.x, y: circleInfo.center.y, r: r };
+            }
+          }
+          cnt.delete();
+        }
+        contours.delete(); hierarchy.delete();
+
+        var now = performance.now();
+        if (best) {
+          trajectory.push(best);
+          if (trajectory.length > 12) trajectory.shift();
+          lastSeenAt = now; tracking = true;
+          if (!calibrating) statusEl.textContent = '공 추적 중...';
+        } else if (tracking && now - lastSeenAt > LOST_MS) {
+          tracking = false;
+          finalizeJudgment();
+        }
+        drawOverlay(best);
+        captureFrame(best, now);
+      }
+      if (prevGray) prevGray.delete();
+      prevGray = gray.clone();
+    } catch (err) {
+      statusEl.textContent = '처리 오류: ' + err.message;
+    }
+  }
+
+  var origSwitchTab = window.switchTab;
+  window.switchTab = function (id) {
+    origSwitchTab(id);
+    if (id === 'abs') initOnce();
+  };
+})();
 </script>
 </body>
 </html>
