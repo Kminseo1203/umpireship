@@ -1689,7 +1689,8 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
         cv.bitwise_and(motionMask, brightMask, candidate);
         cv.dilate(candidate, candidate, kernel);
 
-        if (debugToggle.checked) { debugCanvas.style.display = 'block'; cv.imshow('abs-debug', candidate); }
+        // 🌟 수정 완료: ID 문자열 대신 엘리먼트 객체(debugCanvas)를 전달합니다.
+        if (debugToggle.checked) { debugCanvas.style.display = 'block'; cv.imshow(debugCanvas, candidate); }
         else { debugCanvas.style.display = 'none'; }
 
         contours = new cv.MatVector();
@@ -1737,7 +1738,7 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
 
   var origSwitchTab = window.switchTab;
   window.switchTab = function (id) {
-    origSwitchTab(id);
+    if (typeof origSwitchTab === 'function') origSwitchTab(id);
     if (id === 'abs') initOnce();
   };
 })();
