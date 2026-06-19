@@ -1549,159 +1549,42 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
     devices = all.filter(function (d) { return d.kind === 'videoinput'; });
   }
 
- async function startCamera() {
+async function startCamera() {
     if (!cvReady) { statusEl.textContent = 'OpenCV 로딩 중이에요. 잠시 후 다시 눌러주세요.'; return; }
     try {
-      if (window.abscStream) { 
-        window.abscStream.getTracks().forEach(function (t) { t.stop(); }); 
-      }
-      
+      if (window.abscStream) { window.abscStream.getTracks().forEach(function (t) { t.stop(); }); }
       await listDevices();
-      
-      // 기본 매개변수 설정
       var constraints = { video: true, audio: false };
-      
-      // 디바이스 ID가 감지되었을 때 exact 대신 ideal(권장)을 사용하여 충돌 방지
-      if (devices[currentDeviceIndex] && devices[currentDeviceIndex].deviceId) {
-        constraints.video = { 
-          deviceId: { ideal: devices[currentDeviceIndex].deviceId },
-          width: { ideal: 640 },
-          height: { ideal: 480 }
-        };
+      if (devices[currentDeviceIndex]) {
+        constraints.video = { deviceId: { exact: devices[currentDeviceIndex].deviceId } };
       }
-
-      var stream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
-      } catch (firstErr) {
-        // 특정 디바이스 지정 실패 시, 전체 기본 카메라 옵션으로 2차 시도
-        console.warn("지정 카메라 연결 실패, 기본 옵션으로 재시도합니다.", firstErr);
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      }
-
+      var stream = await navigator.mediaDevices.getUserMedia(constraints);
       window.abscStream = stream;
       video.srcObject = stream;
-      
       await new Promise(function (resolve) { video.onloadedmetadata = resolve; });
       resizeCanvases();
       cap = new cv.VideoCapture(video);
+      
+      // 🔥 [핵심 추가] 카메라 새로 켤 때 이전 프레임 흔적을 완전히 지웁니다.
       if (prevGray) { prevGray.delete(); prevGray = null; }
+      if (src) { src.delete(); src = null; } // src도 깨끗하게 초기화
+      
       streaming = true;
       statusEl.textContent = '카메라 작동 중. 먼저 "스트라이크존 보정"을 눌러주세요.';
       if (!loopHandle) loopHandle = setInterval(processFrame, 50);
     } catch (e) {
-      // 에러 이름을 함께 출력하도록 수정하여 원인 파악을 쉽게 만듭니다.
-      statusEl.textContent = '카메라를 시작할 수 없어요 [' + e.name + ']: ' + e.message;
+      statusEl.textContent = '카메라를 시작할 수 없어요: ' + e.message;
     }
   }
 
-  function inZone(p) {
-    if (!zone) return false;
-    return p.x >= zone.x1 && p.x <= zone.x2 && p.y >= zone.y1 && p.y <= zone.y2;
-  }
-
-  function tryLinkToHost(isStrike) {
-    if (!linkEnabled) return false;
-    try {
-      if (isStrike) { addStrike(); } else { addBall(); }
-      return true;
-    } catch (e) {
-      var key = isStrike ? 'strike' : 'ball';
-      if (!warnedNoButton[key]) {
-        warnedNoButton[key] = true;
-        statusEl.textContent = '⚠ 기존 카운터 연동 중 오류가 발생해 ABS 자체 카운터만 기록 중이에요.';
-      }
-      return false;
-    }
-  }
-
-  function pushLog(isStrike, linked, pitchId) {
-    if (logEl.querySelector('div')&&logEl.firstElementChild.style && logEl.children.length===1 && logEl.textContent.trim()==='없음') logEl.innerHTML='';
-    var row = document.createElement('div');
-    row.className = 'abs-log-row';
-    var left = document.createElement('span');
-    left.textContent = '판정 ' + (localBall + localStrike);
-    var right = document.createElement('span');
-    var r = document.createElement('span');
-    r.innerHTML = '<span class="ptag ' + (isStrike ? 'ptag-strike' : 'ptag-ball') + '">' + (isStrike ? '스트라이크' : '볼') + '</span>' + (linked ? ' <span style="color:#1d9e75">· 연동됨</span>' : '');
-    right.appendChild(r);
-    var replayBtn = document.createElement('button');
-    replayBtn.className = 'abs-replay-btn';
-    replayBtn.textContent = '▶ 다시보기';
-    replayBtn.addEventListener('click', function () { openReplay(pitchId); });
-    right.appendChild(replayBtn);
-    row.appendChild(left);
-    row.appendChild(right);
-    logEl.insertBefore(row, logEl.firstChild);
-  }
-
-  function finalizeJudgment() {
-    if (!zone) { statusEl.textContent = '먼저 스트라이크존을 보정해주세요.'; trajectory = []; return; }
-    if (trajectory.length === 0) return;
-    var p = trajectory[trajectory.length - 1];
-    var isStrike = inZone(p);
-    if (isStrike) { localStrike++; } else { localBall++; }
-    ballNEl.textContent = localBall;
-    strikeNEl.textContent = localStrike;
-    resultEl.textContent = isStrike ? '스트라이크!' : '볼!';
-    resultEl.className = 'abs-result pulse ' + (isStrike ? 'strike' : 'ball');
-    setTimeout(function () { resultEl.classList.remove('pulse'); }, 140);
-    var linked = tryLinkToHost(isStrike);
-
-    var pitchId = nextPitchId++;
-    pitchRecords.set(pitchId, { frames: rollingBuffer.slice(), isStrike: isStrike });
-    if (pitchRecords.size > MAX_RECORDS) {
-      var oldestKey = pitchRecords.keys().next().value;
-      pitchRecords.delete(oldestKey);
-    }
-    pushLog(isStrike, linked, pitchId);
-    trajectory = [];
-  }
-
-  function stopReplayTimer() { if (replayTimer) { clearInterval(replayTimer); replayTimer = null; } }
-  function drawReplayFrame() {
-    if (!replayFrames || replayFrames.length === 0) return;
-    var img = new Image();
-    img.onload = function () {
-      replayCanvas.width = img.width;
-      replayCanvas.height = img.height;
-      rctx.drawImage(img, 0, 0);
-    };
-    img.src = replayFrames[replayIdx];
-  }
-  function startReplayTimer() {
-    stopReplayTimer();
-    replayTimer = setInterval(function () {
-      if (!replayFrames || replayFrames.length === 0) return;
-      replayIdx = (replayIdx + 1) % replayFrames.length;
-      drawReplayFrame();
-    }, CAPTURE_INTERVAL_MS / replaySpeed);
-  }
-  function openReplay(pitchId) {
-    var record = pitchRecords.get(pitchId);
-    if (!record || record.frames.length === 0) { statusEl.textContent = '이 투구의 다시보기는 만료됐어요.'; return; }
-    replayFrames = record.frames;
-    replayIdx = 0;
-    replayPlaying = true;
-    replaySpeed = 1;
-    replayPlayBtn.textContent = '일시정지';
-    replaySlowBtn.textContent = '느리게 (0.4배)';
-    replayTitle.textContent = (record.isStrike ? '스트라이크' : '볼') + ' 다시보기';
-    replayPanel.classList.add('open');
-    drawReplayFrame();
-    startReplayTimer();
-  }
-
-var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierarchy;
+  // 2. 프레임 처리 함수 수정 (크기 다르면 무조건 튕겨내고 재생성)
+  var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierarchy;
   function processFrame() {
     if (!streaming || !cvReady) return;
-    
-    // 🌟 안전 장치: 비디오 해상도가 아직 0이거나 정상적이지 않으면 패스
     if (video.videoWidth === 0 || video.videoHeight === 0) return;
 
-    // 🌟 핵심 수정: src가 없거나, 현재 카메라 비디오 해상도와 크기가 다르면 새로 생성
+    // 만약 카메라 해상도가 바뀌었거나 최초 실행 시 매트릭스 전체 재할당
     if (!src || src.cols !== video.videoWidth || src.rows !== video.videoHeight) {
-      // 기존에 생성된 매트릭스가 있다면 메모리 해제
       if (src) src.delete();
       if (gray) gray.delete();
       if (diff) diff.delete();
@@ -1709,8 +1592,8 @@ var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierar
       if (brightMask) brightMask.delete();
       if (candidate) candidate.delete();
       if (kernel) kernel.delete();
+      if (prevGray) { prevGray.delete(); prevGray = null; } // 🔥 크기 다르면 옛날 프레임 무조건 삭제
 
-      // 현재 카메라 크기에 맞게 정확하게 재할당
       src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
       gray = new cv.Mat(); 
       diff = new cv.Mat(); 
@@ -1719,19 +1602,19 @@ var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierar
       candidate = new cv.Mat();
       kernel = cv.Mat.ones(5, 5, cv.CV_8U);
       
-      // 캔버스 크기도 카메라 해상도에 맞게 동기화
       resizeCanvases();
     }
 
     try {
-      cap.read(src); // 이제 src 크기와 비디오 크기가 완벽히 일치하므로 bad size 에러가 나지 않습니다.
+      cap.read(src);
       cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+      
       if (prevGray) {
-        // 만약 카메라 해상도가 바뀌어서 prevGray 크기가 달라졌다면 패스 후 갱신
+        // 🔥 [철벽 방어] 혹시라도 prevGray와 현재 gray의 가로/세로 크기가 다르면 계산 안 하고 스킵!
         if (prevGray.cols !== gray.cols || prevGray.rows !== gray.rows) {
           prevGray.delete();
           prevGray = gray.clone();
-          return;
+          return; // 이번 프레임은 안전하게 패스
         }
 
         cv.absdiff(gray, prevGray, diff);
@@ -1783,8 +1666,9 @@ var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierar
         drawOverlay(best);
         captureFrame(best, now);
       }
+      
       if (prevGray) prevGray.delete();
-      prevGray = gray.clone();
+      prevGray = gray.clone(); // 다음 프레임을 위해 저장
     } catch (err) {
       statusEl.textContent = '처리 오류: ' + err.message;
     }
