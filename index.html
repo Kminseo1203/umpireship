@@ -1549,18 +1549,39 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
     devices = all.filter(function (d) { return d.kind === 'videoinput'; });
   }
 
-  async function startCamera() {
+ async function startCamera() {
     if (!cvReady) { statusEl.textContent = 'OpenCV 로딩 중이에요. 잠시 후 다시 눌러주세요.'; return; }
     try {
-      if (window.abscStream) { window.abscStream.getTracks().forEach(function (t) { t.stop(); }); }
-      await listDevices();
-      var constraints = { video: true, audio: false };
-      if (devices[currentDeviceIndex]) {
-        constraints.video = { deviceId: { exact: devices[currentDeviceIndex].deviceId } };
+      if (window.abscStream) { 
+        window.abscStream.getTracks().forEach(function (t) { t.stop(); }); 
       }
-      var stream = await navigator.mediaDevices.getUserMedia(constraints);
+      
+      await listDevices();
+      
+      // 기본 매개변수 설정
+      var constraints = { video: true, audio: false };
+      
+      // 디바이스 ID가 감지되었을 때 exact 대신 ideal(권장)을 사용하여 충돌 방지
+      if (devices[currentDeviceIndex] && devices[currentDeviceIndex].deviceId) {
+        constraints.video = { 
+          deviceId: { ideal: devices[currentDeviceIndex].deviceId },
+          width: { ideal: 640 },
+          height: { ideal: 480 }
+        };
+      }
+
+      var stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (firstErr) {
+        // 특정 디바이스 지정 실패 시, 전체 기본 카메라 옵션으로 2차 시도
+        console.warn("지정 카메라 연결 실패, 기본 옵션으로 재시도합니다.", firstErr);
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      }
+
       window.abscStream = stream;
       video.srcObject = stream;
+      
       await new Promise(function (resolve) { video.onloadedmetadata = resolve; });
       resizeCanvases();
       cap = new cv.VideoCapture(video);
@@ -1569,7 +1590,8 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
       statusEl.textContent = '카메라 작동 중. 먼저 "스트라이크존 보정"을 눌러주세요.';
       if (!loopHandle) loopHandle = setInterval(processFrame, 50);
     } catch (e) {
-      statusEl.textContent = '카메라를 시작할 수 없어요: ' + e.message;
+      // 에러 이름을 함께 출력하도록 수정하여 원인 파악을 쉽게 만듭니다.
+      statusEl.textContent = '카메라를 시작할 수 없어요 [' + e.name + ']: ' + e.message;
     }
   }
 
