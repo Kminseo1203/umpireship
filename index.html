@@ -1692,28 +1692,60 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
     startReplayTimer();
   }
 
-  var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierarchy;
+var src, gray, diff, motionMask, brightMask, candidate, kernel, contours, hierarchy;
   function processFrame() {
     if (!streaming || !cvReady) return;
-    if (!src) {
+    
+    // 🌟 안전 장치: 비디오 해상도가 아직 0이거나 정상적이지 않으면 패스
+    if (video.videoWidth === 0 || video.videoHeight === 0) return;
+
+    // 🌟 핵심 수정: src가 없거나, 현재 카메라 비디오 해상도와 크기가 다르면 새로 생성
+    if (!src || src.cols !== video.videoWidth || src.rows !== video.videoHeight) {
+      // 기존에 생성된 매트릭스가 있다면 메모리 해제
+      if (src) src.delete();
+      if (gray) gray.delete();
+      if (diff) diff.delete();
+      if (motionMask) motionMask.delete();
+      if (brightMask) brightMask.delete();
+      if (candidate) candidate.delete();
+      if (kernel) kernel.delete();
+
+      // 현재 카메라 크기에 맞게 정확하게 재할당
       src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
-      gray = new cv.Mat(); diff = new cv.Mat(); motionMask = new cv.Mat();
-      brightMask = new cv.Mat(); candidate = new cv.Mat();
+      gray = new cv.Mat(); 
+      diff = new cv.Mat(); 
+      motionMask = new cv.Mat();
+      brightMask = new cv.Mat(); 
+      candidate = new cv.Mat();
       kernel = cv.Mat.ones(5, 5, cv.CV_8U);
+      
+      // 캔버스 크기도 카메라 해상도에 맞게 동기화
+      resizeCanvases();
     }
+
     try {
-      cap.read(src);
+      cap.read(src); // 이제 src 크기와 비디오 크기가 완벽히 일치하므로 bad size 에러가 나지 않습니다.
       cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
       if (prevGray) {
+        // 만약 카메라 해상도가 바뀌어서 prevGray 크기가 달라졌다면 패스 후 갱신
+        if (prevGray.cols !== gray.cols || prevGray.rows !== gray.rows) {
+          prevGray.delete();
+          prevGray = gray.clone();
+          return;
+        }
+
         cv.absdiff(gray, prevGray, diff);
         cv.threshold(diff, motionMask, parseInt(motionSlider.value, 10), 255, cv.THRESH_BINARY);
         cv.threshold(gray, brightMask, parseInt(brightSlider.value, 10), 255, cv.THRESH_BINARY);
         cv.bitwise_and(motionMask, brightMask, candidate);
         cv.dilate(candidate, candidate, kernel);
 
-        // 🌟 수정 완료: ID 문자열 대신 엘리먼트 객체(debugCanvas)를 전달합니다.
-        if (debugToggle.checked) { debugCanvas.style.display = 'block'; cv.imshow(debugCanvas, candidate); }
-        else { debugCanvas.style.display = 'none'; }
+        if (debugToggle.checked) { 
+          debugCanvas.style.display = 'block'; 
+          cv.imshow(debugCanvas, candidate); 
+        } else { 
+          debugCanvas.style.display = 'none'; 
+        }
 
         contours = new cv.MatVector();
         hierarchy = new cv.Mat();
