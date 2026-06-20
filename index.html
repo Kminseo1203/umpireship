@@ -1369,7 +1369,7 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
   var calibrating = false, calibPoints = [], zone = null;
   var trajectory = [], lastSeenAt = 0, tracking = false, LOST_MS = 220;
   var localBall = 0, localStrike = 0, linkEnabled = true, warnedNoButton = { ball: false, strike: false };
-
+ var pendingStreak = 0, pendingPos = null;
   var captureCanvas = document.createElement('canvas');
   var cctx = captureCanvas.getContext('2d');
   var CAPTURE_W = 220, CAPTURE_INTERVAL_MS = 70, BUFFER_MS = 1400;
@@ -1813,7 +1813,7 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
       hierarchy = new cv.Mat();
       cv.findContours(candidate, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
-      var minR = parseInt(minrSlider.value, 10);
+var minR = parseInt(minrSlider.value, 10);
       var maxR = parseInt(maxrSlider.value, 10);
       var best = null, bestScore = 0;
       for (var i = 0; i < contours.size(); i++) {
@@ -1874,20 +1874,6 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
           tracking = false;
           finalizeJudgment();
         }
-      }
-        cnt.delete();
-      }
-      contours.delete(); hierarchy.delete();
-
-      var now = performance.now();
-      if (best) {
-        trajectory.push(best);
-        if (trajectory.length > 12) trajectory.shift();
-        lastSeenAt = now; tracking = true;
-        if (!calibrating) statusEl.textContent = '공 추적 중...';
-      } else if (tracking && now - lastSeenAt > LOST_MS) {
-        tracking = false;
-        finalizeJudgment();
       }
 
       drawOverlay(best);
