@@ -1815,19 +1815,66 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
 
       var minR = parseInt(minrSlider.value, 10);
       var maxR = parseInt(maxrSlider.value, 10);
-      var best = null;
+      var best = null, bestScore = 0;
       for (var i = 0; i < contours.size(); i++) {
         var cnt = contours.get(i);
         var area = cv.contourArea(cnt);
         var circleInfo = cv.minEnclosingCircle(cnt);
         var r = circleInfo.radius;
-        if (r >= minR && r <= maxR) {
+        var rect = cv.boundingRect(cnt);
+        var aspect = rect.height > 0 ? rect.width / rect.height : 0;
+
+        // 1) 크기 + 2) 종횡비(공은 가로세로 거의 1:1)
+        if (r >= minR && r <= maxR && aspect > 0.75 && aspect < 1.33) {
           var circleArea = Math.PI * r * r;
           var circularity = circleArea > 0 ? area / circleArea : 0;
-          if (circularity > 0.45) {
-            if (!best || r > best.r) best = { x: circleInfo.center.x, y: circleInfo.center.y, r: r };
+
+          // 3) 보정된 스트라이크존 주변 영역만 후보로 인정 (배경 노이즈 차단)
+          var nearZone = true;
+          if (zone) {
+            var zw = zone.x2 - zone.x1, zh = zone.y2 - zone.y1;
+            var marginX = zw * 2, marginTop = zh * 3, marginBottom = zh * 1.2;
+            nearZone = circleInfo.center.x > zone.x1 - marginX &&
+                       circleInfo.center.x < zone.x2 + marginX &&
+                       circleInfo.center.y > zone.y1 - marginTop &&
+                       circleInfo.center.y < zone.y2 + marginBottom;
+          }
+
+          // 4) 원형도 기준 상향 (0.45 → 0.7)
+          if (circularity > 0.7 && nearZone && circularity > bestScore) {
+            bestScore = circularity;
+            best = { x: circleInfo.center.x, y: circleInfo.center.y, r: r };
           }
         }
+        cnt.delete();
+      }
+      contours.delete(); hierarchy.delete();
+
+      var now = performance.now();
+
+      // 5) 연속 프레임 확인 — 같은 위치 근처에서 최소 2프레임 연속 검출돼야 진짜 추적 시작
+      if (best) {
+        if (pendingPos && Math.hypot(best.x - pendingPos.x, best.y - pendingPos.y) < 70) {
+          pendingStreak++;
+        } else {
+          pendingStreak = 1;
+        }
+        pendingPos = best;
+
+        if (pendingStreak >= 2) {
+          trajectory.push(best);
+          if (trajectory.length > 12) trajectory.shift();
+          lastSeenAt = now; tracking = true;
+          if (!calibrating) statusEl.textContent = '공 추적 중...';
+        }
+      } else {
+        pendingStreak = 0;
+        pendingPos = null;
+        if (tracking && now - lastSeenAt > LOST_MS) {
+          tracking = false;
+          finalizeJudgment();
+        }
+      }
         cnt.delete();
       }
       contours.delete(); hierarchy.delete();
