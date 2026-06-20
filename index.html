@@ -1594,13 +1594,23 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
       window.abscStream = stream;
       video.srcObject = stream;
       await new Promise(function (resolve) { video.onloadedmetadata = resolve; });
-      resizeCanvases();
-      cap = new cv.VideoCapture(video);
 
-      // 카메라를 새로 시작할 때 기존 OpenCV 자원을 모두 정리해서
-      // 다음 processFrame 호출에서 새 크기로 깨끗하게 재생성되도록 함
-      if (prevGray) { prevGray.delete(); prevGray = null; }
+      // 일부 환경(특히 안드로이드 Chrome)은 onloadedmetadata 시점에
+      // videoWidth/videoHeight가 아직 0이거나 확정되지 않을 수 있다.
+      // 실제 크기가 잡힐 때까지 짧게 기다린다.
+      var waited = 0;
+      while ((!video.videoWidth || !video.videoHeight) && waited < 2000) {
+        await new Promise(function (r) { setTimeout(r, 50); });
+        waited += 50;
+      }
+
+      resizeCanvases();
+
+      // cap과 src는 processFrame이 항상 함께 재생성하므로, 여기서는
+      // 기존 자원만 정리해 다음 processFrame 호출에서 깨끗하게 다시 만들어지게 한다.
       if (src) { src.delete(); src = null; }
+      if (prevGray) { prevGray.delete(); prevGray = null; }
+      cap = null;
 
       streaming = true;
       statusEl.textContent = '카메라 작동 중. 먼저 "스트라이크존 보정"을 눌러주세요.';
@@ -1740,9 +1750,12 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
     if (!streaming || !cvReady) return;
     if (!video.videoWidth || !video.videoHeight) return;
 
-    // 비디오 실제 해상도가 바뀌었을 때(또는 최초 1회) 모든 Mat을 새 크기로 재생성.
-    // 이렇게 해야 Mat들 간 크기가 항상 일치해 "Bad size input" 에러를 방지한다.
-    if (!src || src.rows !== video.videoHeight || src.cols !== video.videoWidth) {
+    // cap(VideoCapture)이 없거나, video 실제 해상도가 src Mat과 달라졌으면
+    // cap과 src를 "항상 함께" 재생성한다. cv.VideoCapture는 생성 시점의
+    // video 크기를 내부 캔버스에 고정 캐싱하므로, 둘 중 하나만 따로
+    // 재생성하면 크기가 어긋나 "Bad size of input mat" 에러가 난다.
+    var needsRebuild = !cap || !src || src.rows !== video.videoHeight || src.cols !== video.videoWidth;
+    if (needsRebuild) {
       if (src) src.delete();
       if (gray) gray.delete();
       if (diff) diff.delete();
@@ -1751,6 +1764,13 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
       if (candidate) candidate.delete();
       if (kernel) kernel.delete();
       if (prevGray) { prevGray.delete(); prevGray = null; }
+
+      try {
+        cap = new cv.VideoCapture(video);
+      } catch (e) {
+        cap = null;
+        return;
+      }
 
       src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
       gray = new cv.Mat();
