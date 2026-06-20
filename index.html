@@ -1604,6 +1604,8 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
         waited += 50;
       }
 
+      video.width = video.videoWidth;
+      video.height = video.videoHeight;
       resizeCanvases();
 
       // cap과 src는 processFrame이 항상 함께 재생성하므로, 여기서는
@@ -1765,13 +1767,16 @@ if(gameLoaded||rostersLoaded) showToast('이전 경기 기록을 불러왔습니
       if (kernel) kernel.delete();
       if (prevGray) { prevGray.delete(); prevGray = null; }
 
+      video.width = video.videoWidth;
+      video.height = video.videoHeight;
+
       try {
         cap = new cv.VideoCapture(video);
       } catch (e) {
         cap = null;
         return;
       }
-
+      
       src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
       gray = new cv.Mat();
       diff = new cv.Mat();
